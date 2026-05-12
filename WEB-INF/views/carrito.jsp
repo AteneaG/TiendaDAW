@@ -1,43 +1,132 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<h1%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
-<head><title>Carrito</title></head>
-<body bgcolor="#FDF5E6">
-    <center><h1>Carrito de la compra</h1></center>
+<head>
+    <title>Carrito de Compra - Música para DAA</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            background-color: #FDF5E6;
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 { 
+            text-align: center; 
+            margin-bottom: 20px;
+            size: +3;
+            font-family: 'Times New Roman', Times, serif;
+        }
+        .header { 
+            text-align: center; 
+            margin-bottom: 20px;
+        }
+        table { 
+            width: 90%; 
+            margin: 0 auto; 
+            border-collapse: collapse; 
+        }
+        th, td { 
+            padding: 10px; 
+            text-align: left; 
+            border-bottom: 1px solid #ddd;
+        }
+        th { 
+            background-color: #f2f2f2;
+        }
+        .total-row { 
+            font-weight: bold;
+        }
+        .buttons-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center; 
+            gap: 10px;
+        }
+        .btn { 
+            padding: 8px 16px; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            text-decoration: none; 
+            font-size: 14px;
+        }
+        .btn-primary { 
+            background-color: #4CAF50; 
+            color: white;
+        }
+        .btn-secondary { 
+            background-color: #2196F3;
+            color: white;
+        }
+        .btn-danger {
+            background-color: #f44336; 
+            color: white; 
+        }
+        hr { 
+            border: 0; 
+            height: 1px; 
+            background-color: #ccc; 
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <table align="center" border="0">
+            <tr>
+                <th><img src="../img/musica.jpg" width="50" height="50"></th>
+                <th><h1>Música para DAA - Carrito de Compra</h1></th>
+                <th><img src="../img/musica.jpg" width="50" height="50"></th>
+            </tr>
+        </table>
+    </div>
     <hr>
+
     <form method="post" action="../servlet/tienda">
         <input type="hidden" name="accion" value="eliminar">
-        <table border="1" align="center">
+        <table>
             <tr>
-                <th>TITULO DEL CD</th>
+                <th>Título</th>
+                <th>Artista</th>
+                <th>País</th>
+                <th>Precio Unitario</th>
                 <th>Cantidad</th>
-                <th>Importe</th>
+                <th>Subtotal</th>
                 <th>Eliminar</th>
             </tr>
             <c:forEach var="entry" items="${sessionScope.carrito.items}">
                 <tr>
-                    <td>${entry.key}</td>
-                    <td>${entry.value}</td>
-                    <td></td>
+                    <td>${entry.value.titulo}</td>
+                    <td>${entry.value.artista}</td>
+                    <td>${entry.value.pais}</td>
+                    <td>${entry.value.precio}€</td>
+                    <td>${entry.value.cantidad}</td>
+                    <td>${entry.value.precio * entry.value.cantidad}€</td>
                     <td><input type="radio" name="cdEliminar" value="${entry.key}"></td>
                 </tr>
             </c:forEach>
-            <tr>
-                <td colspan="2"><b>IMPORTE TOTAL</b></td>
-                <td><b>${sessionScope.carrito.calcularTotal()}</b></td>
-                <td><input type="submit" value="Eliminar"></td>
+            <tr class="total-row">
+                <td colspan="5" style="text-align: right;">IMPORTE TOTAL:</td>
+                <td>${sessionScope.carrito.calcularTotal()}€</td>
+                <td><input type="submit" value="Eliminar" class="btn btn-danger"></td>
             </tr>
         </table>
+
+        <div class="buttons-container">
+            <a href="../index.html" class="btn btn-secondary">Continuar Comprando</a>
+        </div>
     </form>
-    <br>
-    <center>
-        <form method="get" action="../index.html">
-            <input type="submit" value="Sigo comprando">
-        </form>
+    
+    <!--TODO: CAMBIAR A GET -->
+    <div class="buttons-container">
         <form method="post" action="../servlet/tienda">
             <input type="hidden" name="accion" value="pagar">
-            <input type="submit" value="Me largo a pagar">
+            <input type="submit" value="Confirmar Compra" class="btn btn-primary">
         </form>
-    </center>
+    </div>
+
+    <hr>
 </body>
 </html>
