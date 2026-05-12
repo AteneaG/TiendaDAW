@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,15 +8,16 @@
     <style>
         body {
             background-color: #FDF5E6;
-            font-family: 'Times New Roman', Times, serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
         }
         h1 { 
-            text-align: center; 
-            margin-bottom: 20px;
-            size: +3;
-            font-family: 'Times New Roman', Times, serif;
+            text-align: center;
+            margin: 0;
+            line-height: 50px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 0 10px;
         }
         .header {
             text-align: center;
@@ -42,7 +44,7 @@
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            font-family: 'Times New Roman', Times, serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: 16px;
         }
         .form-section {
@@ -70,6 +72,7 @@
             text-decoration: none;
             font-size: 14px;
             display: inline-block;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .btn-primary {
             background-color: #4CAF50;
@@ -146,9 +149,9 @@
     <div class="header">
         <table align="center" border="0">
             <tr> 
-                <th><img src="../img/musica.jpg" width="50" height="50"></th>
+                <th><img src="${pageContext.request.contextPath}/img/musica.png" width="50" height="50"></th>
                 <th><h1>Pago</h1></th>
-                <th><img src="../img/musica.jpg" width="50" height="50"></th>
+                <th><img src="${pageContext.request.contextPath}/img/musica.png" width="50" height="50"></th>
             </tr>  
         </table>
     </div>
@@ -157,7 +160,7 @@
     
     <div class="formulario-container">
         <div class="mensaje-resumen">
-            <p>Está a punto de finalizar su compra. El total a pagar es: <strong>${sessionScope.totalFinal}</strong> (IVA incluido).</p>
+            <p>Está a punto de finalizar su compra. El total a pagar es: <strong>${sessionScope.totalFinal}€</strong> (IVA incluido).</p>
             <p>Por favor, complete sus datos de contacto y pago para procesar la operación.</p>
         </div>
         
@@ -201,7 +204,7 @@
             </div>
             
             <div class="buttons-container">
-                <button type="submit" name="btn btn-primary" value="finalizarCompra">Finalizar Compra</button>
+                <button type="submit" class="btn btn-primary">Finalizar Compra</button>
                 <a href="../servlet/tienda" class="btn btn-secondary">Volver al Carrito</a>
             </div>
         </form>

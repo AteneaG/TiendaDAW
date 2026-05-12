@@ -1,6 +1,5 @@
 package tienda.BD;
 
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +10,7 @@ public class ProductoDAO
 {
     public static List<CD> obtenerTodosLosProductos() {
         List<CD> productos = new ArrayList<>();
-        String sql = "SELECT id, titulo, artista, genero, precio, stock FROM productos";
+        String sql = "SELECT id, titulo, artista, pais, precio, stock FROM productos";
         
         try (Connection conn = BaseDeDatos.getConnection();
              Statement stmt = conn.createStatement();

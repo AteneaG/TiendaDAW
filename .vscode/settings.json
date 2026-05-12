@@ -1,5 +1,6 @@
 {
     "java.project.referencedLibraries": [
-        "C:/Users/athen/Documents/apache-tomcat-10.1.54/lib/servlet-api.jar"
+        "C:/Users/athen/Documents/apache-tomcat-10.1.54/lib/servlet-api.jar",
+        "C:/Users/athen/Documents/apache-tomcat-10.1.54/lib/postgresql-42.7.3.jar"
     ]
 }
