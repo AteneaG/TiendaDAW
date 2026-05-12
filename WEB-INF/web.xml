@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
 
+
+  <!-- Servlet de la tienda -->
   <servlet>
     <servlet-name>tienda</servlet-name>
-    <servlet-class>TiendaServlet</servlet-class>
+    <servlet-class>tienda.TiendaServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
     <servlet-name>tienda</servlet-name>
     <url-pattern>/servlet/tienda</url-pattern>
   </servlet-mapping>
+  <!-- Fin servlet de la tienda -->
+
 </web-app>

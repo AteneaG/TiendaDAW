@@ -1,3 +1,6 @@
+package tienda;
+
+
 import java.util.*;
 
 public class Carrito {

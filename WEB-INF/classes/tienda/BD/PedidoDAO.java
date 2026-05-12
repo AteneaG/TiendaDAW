@@ -1,7 +1,10 @@
+package tienda.BD;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Map;
-import CD.CD;
+
+import tienda.CD;
 
 public class PedidoDAO {
 

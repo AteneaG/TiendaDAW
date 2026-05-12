@@ -1,8 +1,11 @@
+package tienda;
+
+
 import java.io.*;
 import java.util.*;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
-import java.sql.*;
+import tienda.BD.*;
 
 public class TiendaServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -47,32 +50,10 @@ public class TiendaServlet extends HttpServlet {
             StringTokenizer t = new StringTokenizer(cdStr, "|");
             String titulo = t.nextToken().trim();
             String artista = t.nextToken().trim();
-            String pais = t.nextToken().trim();
-            String precioStr = t.nextToken().replace('$', ' ').trim();
-            double precio = Double.parseDouble(precioStr);
 
-            //TODO: REVISAR CONSULTA SQL PARA OBTENER ID DEL CD
-            int id;
-            try {
-                System.out.println("Intentando conectar a la base de datos...");
-                Connection conn = BaseDeDatos.getConnection();
-                System.out.println("Conexión establecida exitosamente!");
-        
-                PreparedStatement ps = conn.prepareStatement("SELECT id FROM productos WHERE titulo = ?");
-                ps.setString(1, titulo);
-                ResultSet rs = ps.executeQuery();
 
-                if (rs.next()) {
-                    id = rs.getInt("id");
-                }
-                
-                rs.close();
-                ps.close();
-            } catch (Exception e) {
-                System.err.println("Error al obtener el ID del CD: " + e.getMessage());
-            }
 
-            CD cd = new CD(id, titulo, artista, pais, precio, cantidad);
+            CD cd = ProductoDAO.obtenerProductoPorArtistaYTitulo(artista, titulo);
             carrito.agregar(cd);
 
             request.getRequestDispatcher("/views/carrito.jsp").forward(request, response);

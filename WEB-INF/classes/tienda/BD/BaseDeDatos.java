@@ -1,6 +1,11 @@
+package tienda.BD;
+
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+
+import tienda.CD;
 
 /**
  * Clase que gestiona la conexión con la base de datos PostgreSQL
