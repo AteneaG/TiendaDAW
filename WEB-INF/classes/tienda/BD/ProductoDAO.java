@@ -37,7 +37,7 @@ public class ProductoDAO
     }
     
     public static CD obtenerProductoPorId(int id) {
-        String sql = "SELECT id, titulo, artista, genero, precio, stock FROM productos WHERE id = ?";
+        String sql = "SELECT id, titulo, artista, pais, precio, stock FROM productos WHERE id = ?";
         
         try (Connection conn = BaseDeDatos.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -50,7 +50,7 @@ public class ProductoDAO
                         rs.getInt("id"),
                         rs.getString("titulo"),
                         rs.getString("artista"),
-                        rs.getString("genero"),
+                        rs.getString("pais"),
                         rs.getDouble("precio"),
                         rs.getInt("stock")
                     );
@@ -58,7 +58,7 @@ public class ProductoDAO
             }
             
         } catch (SQLException e) {
-            System.err.println("Error al obtener producto por ID: " + e.getMessage());
+            System.err.println("Error al intentar obtener producto por el ID: " + e.getMessage());
         }
         
         return null;
@@ -87,7 +87,7 @@ public class ProductoDAO
             }
             
         } catch (SQLException e) {
-            System.err.println("Error al obtener producto por ID: " + e.getMessage());
+            System.err.println("Error al intentar obtener producto por Artista y Titulo: " + e.getMessage());
         }
         
         return null;
