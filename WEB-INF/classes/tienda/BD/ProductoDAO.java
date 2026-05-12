@@ -65,7 +65,7 @@ public class ProductoDAO
     }
 
     public static CD obtenerProductoPorArtistaYTitulo(String artista, String titulo) {
-        String sql = "SELECT id, titulo, artista, genero, precio, stock FROM productos WHERE artista = ? AND titulo = ?";
+        String sql = "SELECT id, titulo, artista, pais, precio, stock FROM productos WHERE artista = ? AND titulo = ?";
         
         try (Connection conn = BaseDeDatos.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -79,7 +79,7 @@ public class ProductoDAO
                         rs.getInt("id"),
                         rs.getString("titulo"),
                         rs.getString("artista"),
-                        rs.getString("genero"),
+                        rs.getString("pais"),
                         rs.getDouble("precio"),
                         rs.getInt("stock")
                     );

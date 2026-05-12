@@ -54,7 +54,11 @@ public class TiendaServlet extends HttpServlet {
 
 
             CD cd = ProductoDAO.obtenerProductoPorArtistaYTitulo(artista, titulo);
-            carrito.agregar(cd);
+            if (cd != null) {
+                carrito.agregar(cd);
+            } else {
+                System.err.println("CD no encontrado: " + artista + " - " + titulo);
+            }
 
             request.getRequestDispatcher("/views/carrito.jsp").forward(request, response);
         }
