@@ -1,11 +1,9 @@
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Map;
-import CD.CD;
 
 public class PedidoDAO {
 
-        
     public static boolean registrarPedido(int usuarioId, ArrayList<CD> carrito) {
         Connection conn = null;
         try {
@@ -13,7 +11,7 @@ public class PedidoDAO {
             conn.setAutoCommit(false); // Iniciar transacción
 
             // 1. Insertar el pedido (el total se actualizará automáticamente mediante el trigger)
-            String sqlPedido = "INSERT INTO pedidos (usuario_id, fecha_pedido, total, estado)" + 
+            String sqlPedido = "INSERT INTO pedidos (usuario_id, fecha_pedido, total)" + 
                                 "VALUES (?, CURRENT_TIMESTAMP, 0, 'confirmado') RETURNING id";
             int pedidoId;
             try (PreparedStatement stmtPedido = conn.prepareStatement(sqlPedido)) {

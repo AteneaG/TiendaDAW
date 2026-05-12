@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class Carrito {
-    private HashMap<Integer, CD> items = new HashMap<Integer, CD>();
+    private HashMap<Integer, CD> items = new HashMap<Integer, CD>();    //Id, CD
 
     //Añadir cd al carrito, si ya existe, sumar la cantidad
     public void agregar(CD cd) {

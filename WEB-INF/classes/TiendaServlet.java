@@ -20,23 +20,32 @@ public class TiendaServlet extends HttpServlet {
 
         if (accion != null && accion.equals("pagar")) {
             //Paso a caja (F3)
-            request.getRequestDispatcher("/views/caja.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/caja.jsp").forward(request, response);
             return;
         
         } else if (accion != null && accion.equals("confirmarPago")) {
             //Confirmar pago, vaciar carrito y volver al inicio (F5)
+            String email = request.getParameter("email");
+
+            //Obtener el id del usuario a partir del email
+            int usuarioId = UsuarioDAO.obtenerIdUsuario(email);
+
+            //Registrar el pedido en la BD
+            ArrayList<CD> cds = new ArrayList<>(carrito.getItems().values());
+            PedidoDAO.registrarPedido(usuarioId, cds);
+
             carrito.vaciar();
-            request.getRequestDispatcher("/views/confirmacion.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/confirmacion.jsp").forward(request, response);
             return;
         } else if (accion != null && accion.equals("irAPago")) {
             //Ir al pago desde la confirmacion (F3)
-            request.getRequestDispatcher("/views/pago.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/pago.jsp").forward(request, response);
             return;
         } else if (accion != null && accion.equals("eliminar")) {
             // Eliminar CD del carrito (F4)
             String cdEliminar = request.getParameter("cdEliminar");
             carrito.eliminar(Integer.parseInt(cdEliminar));
-            request.getRequestDispatcher("/views/carrito.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/carrito.jsp").forward(request, response);
             return;
         } else {    //Añadir CD al carrito (F2)
             //Leer datos del formulario
@@ -52,7 +61,7 @@ public class TiendaServlet extends HttpServlet {
             double precio = Double.parseDouble(precioStr);
 
             //TODO: REVISAR CONSULTA SQL PARA OBTENER ID DEL CD
-            int id;
+            int id = 0;
             try {
                 System.out.println("Intentando conectar a la base de datos...");
                 Connection conn = BaseDeDatos.getConnection();
@@ -75,7 +84,7 @@ public class TiendaServlet extends HttpServlet {
             CD cd = new CD(id, titulo, artista, pais, precio, cantidad);
             carrito.agregar(cd);
 
-            request.getRequestDispatcher("/views/carrito.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/carrito.jsp").forward(request, response);
         }
     }   
 
@@ -91,11 +100,11 @@ public class TiendaServlet extends HttpServlet {
 
         if (accion != null && accion.equals("verCaja")) {
             //Volver a caja
-            request.getRequestDispatcher("/views/caja.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/caja.jsp").forward(request, response);
 
         } else if (accion != null && accion.equals("verCarrito")) {
             //Volver al carrito
-            request.getRequestDispatcher("/views/carrito.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/carrito.jsp").forward(request, response);
 
         } else {
             //Por defecto volver al index

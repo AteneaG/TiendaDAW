@@ -1,4 +1,4 @@
-<h1%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,15 +7,16 @@
     <style>
         body {
             background-color: #FDF5E6;
-            font-family: 'Times New Roman', Times, serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
         }
         h1 { 
-            text-align: center; 
-            margin-bottom: 20px;
-            size: +3;
-            font-family: 'Times New Roman', Times, serif;
+            text-align: center;
+            margin: 0;
+            line-height: 50px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 0 10px;
         }
         .header { 
             text-align: center; 
@@ -51,6 +52,7 @@
             font-weight: bold; 
             text-decoration: none; 
             font-size: 14px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .btn-primary { 
             background-color: #4CAF50; 
@@ -76,9 +78,9 @@
     <div class="header">
         <table align="center" border="0">
             <tr>
-                <th><img src="../img/musica.jpg" width="50" height="50"></th>
-                <th><h1>Música para DAA - Carrito de Compra</h1></th>
-                <th><img src="../img/musica.jpg" width="50" height="50"></th>
+                <th><img src="/img/musica.png" width="50" height="50"></th>
+                <th><h1>Carrito de Compra</h1></th>
+                <th><img src="/img/musica.png" width="50" height="50"></th>
             </tr>
         </table>
     </div>

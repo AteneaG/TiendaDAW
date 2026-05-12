@@ -1,12 +1,11 @@
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import CD.CD;
 
 public class ProductoDAO {
     public static List<CD> obtenerTodosLosProductos() {
         List<CD> productos = new ArrayList<>();
-        String sql = "SELECT id, titulo, artista, genero, precio, stock FROM productos";
+        String sql = "SELECT id, titulo, artista, pais, precio, stock FROM productos";
         
         try (Connection conn = BaseDeDatos.getConnection();
              Statement stmt = conn.createStatement();
@@ -17,7 +16,7 @@ public class ProductoDAO {
                     rs.getInt("id"),
                     rs.getString("titulo"),
                     rs.getString("artista"),
-                    rs.getString("genero"),
+                    rs.getString("pais"),
                     rs.getDouble("precio"),
                     rs.getInt("stock")
                 );
@@ -32,7 +31,7 @@ public class ProductoDAO {
     }
     
     public static CD obtenerProductoPorId(int id) {
-        String sql = "SELECT id, titulo, artista, genero, precio, stock FROM productos WHERE id = ?";
+        String sql = "SELECT id, titulo, artista, pais, precio, stock FROM productos WHERE id = ?";
         
         try (Connection conn = BaseDeDatos.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -45,7 +44,7 @@ public class ProductoDAO {
                         rs.getInt("id"),
                         rs.getString("titulo"),
                         rs.getString("artista"),
-                        rs.getString("genero"),
+                        rs.getString("pais"),
                         rs.getDouble("precio"),
                         rs.getInt("stock")
                     );
