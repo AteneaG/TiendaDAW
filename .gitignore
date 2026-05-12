@@ -1,0 +1,10 @@
+# .class de los compilador de java
+*.class
+
+
+# Carpeta VSCode
+.vscode/
+
+# WARs
+*.war
+
