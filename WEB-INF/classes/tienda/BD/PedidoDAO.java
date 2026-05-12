@@ -1,6 +1,13 @@
+package tienda.BD;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Map;
+<<<<<<< HEAD:WEB-INF/classes/BD/PedidoDAO.java
+=======
+
+import tienda.CD;
+>>>>>>> 0adbbffe92ee4a6ed01f5ec39a07d82415ad6956:WEB-INF/classes/tienda/BD/PedidoDAO.java
 
 public class PedidoDAO {
 

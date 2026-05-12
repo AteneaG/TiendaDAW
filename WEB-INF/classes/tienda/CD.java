@@ -1,3 +1,5 @@
+package tienda;
+
 public class CD {
     private int id;
     private String titulo;
