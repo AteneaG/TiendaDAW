@@ -57,10 +57,10 @@ public class TiendaServlet extends HttpServlet {
             if (cd != null) {
                 carrito.agregar(cd);
             } else {
-                System.err.println("CD no encontrado: " + artista + " - " + titulo);
+                System.err.println("CD no encontrado por  Artista ("+artista+") y Titulo ("+titulo+")");
             }
 
-            request.getRequestDispatcher("/views/carrito.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/carrito.jsp").forward(request, response);
         }
     }   
 

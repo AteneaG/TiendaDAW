@@ -22,7 +22,7 @@ public class ProductoDAO
                     rs.getInt("id"),
                     rs.getString("titulo"),
                     rs.getString("artista"),
-                    rs.getString("genero"),
+                    rs.getString("pais"),
                     rs.getDouble("precio"),
                     rs.getInt("stock")
                 );
@@ -75,7 +75,7 @@ public class ProductoDAO
             
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return new CD(
+                    CD cdReturn = new CD(
                         rs.getInt("id"),
                         rs.getString("titulo"),
                         rs.getString("artista"),
@@ -83,11 +83,15 @@ public class ProductoDAO
                         rs.getDouble("precio"),
                         rs.getInt("stock")
                     );
+
+                    System.out.println("Datos CD obtenido: " + cdReturn);
+
+                    return cdReturn;
                 }
             }
             
         } catch (SQLException e) {
-            System.err.println("Error al intentar obtener producto por Artista y Titulo: " + e.getMessage());
+            System.err.println("Error al intentar obtener producto por Artista ("+artista+") y Titulo ("+titulo+"): " + e.getMessage());
         }
         
         return null;
