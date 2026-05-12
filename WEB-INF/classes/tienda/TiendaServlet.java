@@ -1,6 +1,5 @@
 package tienda;
 
-
 import java.io.*;
 import java.util.*;
 import jakarta.servlet.*;
@@ -29,6 +28,10 @@ public class TiendaServlet extends HttpServlet {
         } else if (accion != null && accion.equals("confirmarPago")) {
             //Confirmar pago, vaciar carrito y volver al inicio (F5)
             String email = request.getParameter("email");
+            String nombre = request.getParameter("nombre");
+
+            session.setAttribute("totalFinal", carrito.calcularTotal());
+            session.setAttribute("nombreUsuario", nombre);
 
             //Obtener el id del usuario a partir del email
             int usuarioId = UsuarioDAO.obtenerIdUsuario(email);
@@ -46,8 +49,12 @@ public class TiendaServlet extends HttpServlet {
             return;
         } else if (accion != null && accion.equals("eliminar")) {
             // Eliminar CD del carrito (F4)
-            String cdEliminar = request.getParameter("cdEliminar");
-            carrito.eliminar(Integer.parseInt(cdEliminar));
+            String[] cdsEliminar = request.getParameterValues("cdEliminar");
+            if (cdsEliminar != null) {
+                for (String id : cdsEliminar) {
+                    carrito.eliminar(Integer.parseInt(id));
+                }
+            }
             request.getRequestDispatcher("/WEB-INF/views/carrito.jsp").forward(request, response);
             return;
         } else {    //Añadir CD al carrito (F2)
@@ -60,21 +67,6 @@ public class TiendaServlet extends HttpServlet {
             String titulo = t.nextToken().trim();
             String artista = t.nextToken().trim();
 
-<<<<<<< HEAD:WEB-INF/classes/TiendaServlet.java
-            //TODO: REVISAR CONSULTA SQL PARA OBTENER ID DEL CD
-            int id = 0;
-            try {
-                System.out.println("Intentando conectar a la base de datos...");
-                Connection conn = BaseDeDatos.getConnection();
-                System.out.println("Conexión establecida exitosamente!");
-        
-                PreparedStatement ps = conn.prepareStatement("SELECT id FROM productos WHERE titulo = ?");
-                ps.setString(1, titulo);
-                ResultSet rs = ps.executeQuery();
-=======
->>>>>>> 0adbbffe92ee4a6ed01f5ec39a07d82415ad6956:WEB-INF/classes/tienda/TiendaServlet.java
-
-
             CD cd = ProductoDAO.obtenerProductoPorArtistaYTitulo(artista, titulo);
             if (cd != null) {
                 carrito.agregar(cd);
@@ -82,12 +74,6 @@ public class TiendaServlet extends HttpServlet {
                 System.err.println("CD no encontrado por  Artista ("+artista+") y Titulo ("+titulo+")");
             }
 
-<<<<<<< HEAD:WEB-INF/classes/TiendaServlet.java
-            CD cd = new CD(id, titulo, artista, pais, precio, cantidad);
-            carrito.agregar(cd);
-
-=======
->>>>>>> 0adbbffe92ee4a6ed01f5ec39a07d82415ad6956:WEB-INF/classes/tienda/TiendaServlet.java
             request.getRequestDispatcher("/WEB-INF/views/carrito.jsp").forward(request, response);
         }
     }   

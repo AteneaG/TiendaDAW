@@ -37,6 +37,6 @@ public class Carrito {
         for (CD cd : items.values()) {
             total += cd.getPrecio() * cd.getCantidad();
         }
-        return total;
+        return Math.round(total * 100.0) / 100.0;
     }
 }

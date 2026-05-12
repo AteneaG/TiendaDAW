@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
@@ -22,18 +23,16 @@
             text-align: center; 
             margin-bottom: 20px;
         }
-        table { 
+        .tabla{ 
             width: 90%; 
             margin: 0 auto; 
             border-collapse: collapse; 
         }
-        th, td { 
+        .tabla th,
+        .tabla td{ 
             padding: 10px; 
             text-align: left; 
             border-bottom: 1px solid #ddd;
-        }
-        th { 
-            background-color: #f2f2f2;
         }
         .total-row { 
             font-weight: bold;
@@ -78,9 +77,9 @@
     <div class="header">
         <table align="center" border="0">
             <tr>
-                <th><img src="/img/musica.png" width="50" height="50"></th>
+                <th><img src="${pageContext.request.contextPath}/img/musica.png" width="50" height="50"></th>
                 <th><h1>Carrito de Compra</h1></th>
-                <th><img src="/img/musica.png" width="50" height="50"></th>
+                <th><img src="${pageContext.request.contextPath}/img/musica.png" width="50" height="50"></th>
             </tr>
         </table>
     </div>
@@ -88,7 +87,7 @@
 
     <form method="post" action="../servlet/tienda">
         <input type="hidden" name="accion" value="eliminar">
-        <table>
+        <table class="tabla">
             <tr>
                 <th>Título</th>
                 <th>Artista</th>
@@ -106,7 +105,7 @@
                     <td>${entry.value.precio}€</td>
                     <td>${entry.value.cantidad}</td>
                     <td>${entry.value.precio * entry.value.cantidad}€</td>
-                    <td><input type="radio" name="cdEliminar" value="${entry.key}"></td>
+                    <td><input type="checkbox" name="cdEliminar" value="${entry.key}"></td>
                 </tr>
             </c:forEach>
             <tr class="total-row">

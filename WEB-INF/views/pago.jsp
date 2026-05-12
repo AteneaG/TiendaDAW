@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
@@ -148,9 +149,9 @@
     <div class="header">
         <table align="center" border="0">
             <tr> 
-                <th><img src="/img/musica.png" width="50" height="50"></th>
+                <th><img src="${pageContext.request.contextPath}/img/musica.png" width="50" height="50"></th>
                 <th><h1>Pago</h1></th>
-                <th><img src="/img/musica.png" width="50" height="50"></th>
+                <th><img src="${pageContext.request.contextPath}/img/musica.png" width="50" height="50"></th>
             </tr>  
         </table>
     </div>
