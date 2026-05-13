@@ -30,6 +30,6 @@ public class detallePedido {
     //TODO REVISAR SI MANTENER
     @Override
     public String toString() {
-        return "Pedido ID: " + pedidoId + ", Producto ID: " + cd.getId() + ", Cantidad: " + cantidad;
+        return "Producto ID: " + cd.getId() + ", Cantidad: " + cantidad;
     }
 }

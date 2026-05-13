@@ -97,14 +97,14 @@
                 <th>Subtotal</th>
                 <th>Eliminar</th>
             </tr>
-            <c:forEach var="entry" items="${sessionScope.carrito.items}">
+            <c:forEach var="entry" items="${sessionScope.carrito.detallesPedido}">
                 <tr>
-                    <td>${entry.value.titulo}</td>
-                    <td>${entry.value.artista}</td>
-                    <td>${entry.value.pais}</td>
-                    <td>${entry.value.precio}€</td>
+                    <td>${entry.value.CD.titulo}</td>
+                    <td>${entry.value.CD.artista}</td>
+                    <td>${entry.value.CD.pais}</td>
+                    <td>${entry.value.CD.precio}€</td>
                     <td>${entry.value.cantidad}</td>
-                    <td>${entry.value.precio * entry.value.cantidad}€</td>
+                    <td>${entry.value.CD.precio * entry.value.cantidad}€</td>
                     <td><input type="checkbox" name="cdEliminar" value="${entry.key}"></td>
                 </tr>
             </c:forEach>
