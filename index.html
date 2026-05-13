@@ -15,6 +15,7 @@
         .header {
             text-align: center;
             margin-bottom: 20px;
+            position: relative;
         }
 
         h1 {
@@ -22,6 +23,38 @@
             line-height: 50px;
             padding: 0 15px;
             font-size: 2em;
+        }
+
+        .btn-perfil {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: #2c2c2c;
+            border-color: 1px solid #2c2c2c;
+            background-color: #FDF5E6;
+            border-radius: 999px;
+            padding: 8px 16px 8px 10px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+            transition: background-color 0.2s;
+        }
+
+        .btn-perfil:hover {
+            background-color: #444;
+        }
+
+        .btn-perfil img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
         }
 
         .product-form {
@@ -101,6 +134,11 @@
                 <th><img src="img/musica.png" width="50" height="50"></th>
             </tr>
         </table>
+
+        <a href="servlet/tienda?accion=verPerfil" class="btn-perfil">
+            <img src="img/fotoDePerfil.png" alt="Perfil">
+            Mi perfil
+        </a>
     </div>
 
     <hr>
@@ -110,19 +148,20 @@
             <p>
                 <b>CD:</b>
                 <select name="cd">
-                    <option>Yuan | The Guo Brothers | China | $14.95</option>
-                    <option>Drums of Passion | Babatunde Olatunji | Nigeria | $16.95</option>
-                    <option>Kaira | Tounami Diabate| Mali | $16.95</option>
-                    <option>The Lion is Loose | Eliades Ochoa | Cuba | $13.95</option>
-                    <option>Dance the Devil Away | Outback | Australia | $14.95</option>
-                    <option>Record of Changes | Samulnori | Korea | $12.95</option>
-                    <option>Djelika | Tounami Diabate | Mali | $14.95</option>
-                    <option>Rapture | Nusrat Fateh Ali Khan | Pakistan | $12.95</option>
-                    <option>Cesaria Evora | Cesaria Evora | Cape Verde | $16.95</option>
-                    <option>DAA | GSTIC | Spain | $50.00</option>
-                    <option>How Did I Get Here? | Louis Tomlinson | UK | $19.99</option>
-                    <option>Walls | Louis Tomlinson | UK | $14.95</option>
-                    <option>Faith in the Future | Louis Tomlinson | UK | $18.99</option>
+                    <option>Yuan | The Guo Brothers | China | €14.95</option>
+                    <option>Drums of Passion | Babatunde Olatunji | Nigeria | €16.95</option>
+                    <option>Kaira | Tounami Diabate | Mali | €16.95</option>
+                    <option>The Lion is Loose | Eliades Ochoa | Cuba | €13.95</option>
+                    <option>Dance the Devil Away | Outback | Australia | €14.95</option>
+                    <option>Record of Changes | Samulnori | Korea | €12.95</option>
+                    <option>Djelika | Tounami Diabate | Mali | €14.95</option>
+                    <option>Rapture | Nusrat Fateh Ali Khan | Pakistan | €12.95</option>
+                    <option>Cesaria Evora | Cesaria Evora | Cape Verde | €16.95</option>
+                    <option>DAA | GSTIC | Spain | €50.00</option>
+                    <option>How Did I Get Here? | Louis Tomlinson | UK | €19.95</option>
+                    <option>Walls | Louis Tomlinson | UK | €14.95</option>
+                    <option>Faith in the Future | Louis Tomlinson | UK | €18.95</option>
+                    <option>Breach | Twenty One Pilots | USA | €11.95</option>
                 </select>
 
                 <b>Cantidad:</b>
@@ -130,9 +169,9 @@
             </p>
 
             <div class="buttons-container">
-				<button type="submit" class="btn btn-primary">Selecciona Producto</button>
-				<a href="servlet/tienda?accion=verCarrito" class="btn btn-secondary">Ver Carrito</a>
-			</div>
+                <button type="submit" class="btn btn-primary">Añadir Producto</button>
+                <a href="servlet/tienda?accion=verCarrito" class="btn btn-secondary">Ver Carrito</a>
+            </div>
         </form>
     </div>
     <hr>

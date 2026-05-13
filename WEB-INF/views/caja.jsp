@@ -24,10 +24,40 @@
         .header {
             text-align: center;
             margin-bottom: 20px;
+            position: relative;
         }
         h1 {
             margin: 0;
             line-height: 50px;
+        }
+        .btn-perfil {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: #2c2c2c;
+            border-color: 1px solid #2c2c2c;
+            background-color: #FDF5E6;
+            border-radius: 999px;
+            padding: 8px 16px 8px 10px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+            transition: background-color 0.2s;
+        }
+        .btn-perfil:hover {
+            background-color: #444;
+        }
+        .btn-perfil img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
         }
         .tabla {
             width: 100%;
@@ -85,6 +115,11 @@
                 <th><img src="${pageContext.request.contextPath}/img/musica.png" width="50" height="50"></th>
             </tr>
         </table>
+
+        <a href="${pageContext.request.contextPath}/servlet/tienda?accion=verPerfil" class="btn-perfil">
+            <img src="${pageContext.request.contextPath}/img/fotoDePerfil.png" alt="Perfil">
+            Mi perfil
+        </a>
     </div>
 
     <hr>

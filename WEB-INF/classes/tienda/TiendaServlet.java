@@ -5,28 +5,32 @@ import java.util.*;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import tienda.BD.*;
+import tienda.Modelo.CD;
+import tienda.Modelo.Carrito;
+import tienda.Modelo.detallePedido;
 
 public class TiendaServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //Crear la sesión
         HttpSession session = request.getSession(true); //Si no existe, la crea
-
-        //Obtener el carrito de la sesión o crear uno nuevo
+        boolean logged = session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged");
         Carrito carrito = (Carrito) session.getAttribute("carrito");
-        if (carrito == null) {
-            carrito = new Carrito();
-            session.setAttribute("carrito", carrito);
-        }
 
         String accion = request.getParameter("accion");
 
         if (accion != null && accion.equals("pagar")) {
-            //Paso a caja (F3)
-            request.getRequestDispatcher("/WEB-INF/views/caja.jsp").forward(request, response);
-            return;
-        
-        } else if (accion != null && accion.equals("confirmarPago")) {
-            //Confirmar pago, vaciar carrito y volver al inicio (F5)
+            if(!logged) {
+                request.setAttribute("error", "Debe iniciar sesión para proceder al pago.");
+                request.getRequestDispatcher("/WEB-INF/views/iniciarSesion.jsp").forward(request, response);
+                return;
+            }
+            request.getRequestDispatcher("/WEB-INF/views/caja.jsp").forward(request, response);        
+        } else if (accion != null && accion.equals("confirmarPago")) {        // (F5) //Confirmar pago, vaciar carrito y volver al inicio (F5)
+            if(!logged) {
+                request.setAttribute("error", "Debe iniciar sesión para proceder al pago.");
+                request.getRequestDispatcher("/WEB-INF/views/iniciarSesion.jsp").forward(request, response);
+                return;
+            }
             String email = request.getParameter("email");
             String nombre = request.getParameter("nombre");
 
@@ -37,27 +41,38 @@ public class TiendaServlet extends HttpServlet {
             int usuarioId = UsuarioDAO.obtenerIdUsuario(email);
 
             //Registrar el pedido en la BD
-            ArrayList<CD> cds = new ArrayList<>(carrito.getItems().values());
-            PedidoDAO.registrarPedido(usuarioId, cds);
+            carrito.terminarPedido();
 
-            carrito.vaciar();
             request.getRequestDispatcher("/WEB-INF/views/confirmacion.jsp").forward(request, response);
             return;
-        } else if (accion != null && accion.equals("irAPago")) {
-            //Ir al pago desde la confirmacion (F3)
-            request.getRequestDispatcher("/WEB-INF/views/pago.jsp").forward(request, response);
-            return;
-        } else if (accion != null && accion.equals("eliminar")) {
-            // Eliminar CD del carrito (F4)
+        } else if (accion != null && accion.equals("eliminar")) {             // (F4) Eliminar CD del carrito (F4)
+            if(!logged) {
+                request.setAttribute("error", "Debe iniciar sesión para proceder al pago.");
+                request.getRequestDispatcher("/WEB-INF/views/iniciarSesion.jsp").forward(request, response);
+                return;
+            }
             String[] cdsEliminar = request.getParameterValues("cdEliminar");
             if (cdsEliminar != null) {
                 for (String id : cdsEliminar) {
-                    carrito.eliminar(Integer.parseInt(id));
+                    CD cd = CDDAO.obtenerCDPorId(Integer.parseInt(id));
+                    carrito.eliminar(cd);
                 }
+            }
+            if (carrito.getDetallesPedido().isEmpty()) {
+                carrito.vaciar();
+                session.setAttribute("carrito", null);
             }
             request.getRequestDispatcher("/WEB-INF/views/carrito.jsp").forward(request, response);
             return;
-        } else {    //Añadir CD al carrito (F2)
+        } else if (accion != null && accion.equals("irAPago")) {              // (F3) Ir al pago desde la confirmacion (F3)
+            if(!logged) {
+                request.setAttribute("error", "Debe iniciar sesión para proceder al pago.");
+                request.getRequestDispatcher("/WEB-INF/views/iniciarSesion.jsp").forward(request, response);
+                return;
+            }
+            request.getRequestDispatcher("/WEB-INF/views/pago.jsp").forward(request, response);
+            return;
+        } else {                                                                       // (F2) Añadir CD al carrito (F2)
             //Leer datos del formulario
             String cdStr = request.getParameter("cd");
             String cantidadStr = request.getParameter("cantidad");
@@ -67,37 +82,51 @@ public class TiendaServlet extends HttpServlet {
             String titulo = t.nextToken().trim();
             String artista = t.nextToken().trim();
 
-            CD cd = ProductoDAO.obtenerProductoPorArtistaYTitulo(artista, titulo);
-            if (cd != null) {
-                carrito.agregar(cd);
-            } else {
-                System.err.println("CD no encontrado por  Artista ("+artista+") y Titulo ("+titulo+")");
-            }
+            CD cd = CDDAO.obtenerCDPorArtistaYTitulo(artista, titulo);
+            detallePedido dp = new detallePedido(cd, cantidad);
 
-            request.getRequestDispatcher("/WEB-INF/views/carrito.jsp").forward(request, response);
+            if (cd != null && dp != null) {
+                //Cuando añade un carrito si este no existe, lo crea con el CD que va a crear
+                if (session.getAttribute("carrito") == null) {
+                    session.setAttribute("carrito", new Carrito(dp));
+                }
+                else carrito.agregarDetalle(dp);
+            } else {
+                System.err.println("\nCD no encontrado por  Artista ("+artista+") y Titulo ("+titulo+")");
+                
+            }
+            response.sendRedirect(request.getContextPath() + "/index.html");
+            
         }
     }   
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        
         HttpSession session = request.getSession(true);
-        Carrito carrito = (Carrito) session.getAttribute("carrito");
-        if (carrito == null) {
-            carrito = new Carrito();
-            session.setAttribute("carrito", carrito);
-        }
-
+        boolean logged = session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged");
+        
         String accion = request.getParameter("accion");
 
-        if (accion != null && accion.equals("verCaja")) {
-            //Volver a caja
+        if (accion != null && accion.equals("verCaja")) {           //Volver a caja
+            if(!logged) {
+                request.setAttribute("error", "Debe iniciar sesión para proceder al pago.");
+                request.getRequestDispatcher("/WEB-INF/views/iniciarSesion.jsp").forward(request, response);
+                return;
+            }
             request.getRequestDispatcher("/WEB-INF/views/caja.jsp").forward(request, response);
-
-        } else if (accion != null && accion.equals("verCarrito")) {
-            //Volver al carrito
+        } 
+        else if (accion != null && accion.equals("verCarrito")) {   //Volver al carrito
             request.getRequestDispatcher("/WEB-INF/views/carrito.jsp").forward(request, response);
-
-        } else {
-            //Por defecto volver al index
+        } else if ("verPerfil".equals(accion)) {
+             if(!logged) {
+                request.setAttribute("error", "Debe iniciar sesión para entrar a su perfil.");
+                request.getRequestDispatcher("/WEB-INF/views/iniciarSesion.jsp").forward(request, response);
+                return;
+            }
+            request.getRequestDispatcher("/WEB-INF/views/perfil.jsp").forward(request, response);
+        }
+        else {                                                      //Por defecto volver al index
+            //LOGICA SI CARRITO = VACIO -> BORRAR CARRITO
             response.sendRedirect(request.getContextPath() + "/index.html");
         }
     }

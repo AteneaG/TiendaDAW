@@ -22,6 +22,36 @@
         .header { 
             text-align: center; 
             margin-bottom: 20px;
+            position: relative;
+        }
+        .btn-perfil {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: #2c2c2c;
+            border-color: 1px solid #2c2c2c;
+            background-color: #FDF5E6;
+            border-radius: 999px;
+            padding: 8px 16px 8px 10px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+            transition: background-color 0.2s;
+        }
+        .btn-perfil:hover {
+            background-color: #444;
+        }
+        .btn-perfil img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
         }
         .tabla{ 
             width: 90%; 
@@ -82,6 +112,11 @@
                 <th><img src="${pageContext.request.contextPath}/img/musica.png" width="50" height="50"></th>
             </tr>
         </table>
+
+        <a href="${pageContext.request.contextPath}/servlet/tienda?accion=verPerfil" class="btn-perfil">
+            <img src="${pageContext.request.contextPath}/img/fotoDePerfil.png" alt="Perfil">
+            Mi perfil
+        </a>
     </div>
     <hr>
 
@@ -97,21 +132,25 @@
                 <th>Subtotal</th>
                 <th>Eliminar</th>
             </tr>
-            <c:forEach var="entry" items="${sessionScope.carrito.items}">
+            <c:forEach var="entry" items="${sessionScope.carrito.detallesPedido}">
                 <tr>
-                    <td>${entry.value.titulo}</td>
-                    <td>${entry.value.artista}</td>
-                    <td>${entry.value.pais}</td>
-                    <td>${entry.value.precio}€</td>
+                    <td>${entry.value.CD.titulo}</td>
+                    <td>${entry.value.CD.artista}</td>
+                    <td>${entry.value.CD.pais}</td>
+                    <td>${entry.value.CD.precio}€</td>
                     <td>${entry.value.cantidad}</td>
-                    <td>${entry.value.precio * entry.value.cantidad}€</td>
+                    <td>${entry.value.CD.precio * entry.value.cantidad}€</td>
                     <td><input type="checkbox" name="cdEliminar" value="${entry.key}"></td>
                 </tr>
             </c:forEach>
             <tr class="total-row">
                 <td colspan="5" style="text-align: right;">IMPORTE TOTAL:</td>
                 <td>${sessionScope.carrito.calcularTotal()}€</td>
-                <td><input type="submit" value="Eliminar" class="btn btn-danger"></td>
+                <td>
+                    <c:if test="${not empty sessionScope.carrito.detallesPedido}">
+                        <input type="submit" value="Eliminar" class="btn btn-danger">
+                    </c:if>
+                </td>
             </tr>
         </table>
 
