@@ -1,4 +1,4 @@
-package tienda;
+package tienda.Modelo;
 
 
 import java.util.*;

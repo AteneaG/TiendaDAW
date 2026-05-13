@@ -4,13 +4,13 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import tienda.CD;
+import tienda.Modelo.CD;
 
-public class ProductoDAO
+public class CDDAO
 {
-    public static List<CD> obtenerTodosLosProductos() {
-        List<CD> productos = new ArrayList<>();
-        String sql = "SELECT id, titulo, artista, pais, precio, stock FROM productos";
+    public static List<CD> obtenerTodosLosCDs() {
+        List<CD> cds = new ArrayList<>();
+        String sql = "SELECT id, titulo, artista, pais, precio FROM CD";
         
         try (Connection conn = BaseDeDatos.getConnection();
              Statement stmt = conn.createStatement();
@@ -22,21 +22,20 @@ public class ProductoDAO
                     rs.getString("titulo"),
                     rs.getString("artista"),
                     rs.getString("pais"),
-                    rs.getDouble("precio"),
-                    rs.getInt("stock")
+                    rs.getDouble("precio")
                 );
-                productos.add(cd);
+                cds.add(cd);
             }
             
         } catch (SQLException e) {
-            System.err.println("Error al obtener productos: " + e.getMessage());
+            System.err.println("Error al obtener CDs: " + e.getMessage());
         }
         
-        return productos;
+        return cds;
     }
     
-    public static CD obtenerProductoPorId(int id) {
-        String sql = "SELECT id, titulo, artista, pais, precio, stock FROM productos WHERE id = ?";
+    public static CD obtenerCDPorId(int id) {
+        String sql = "SELECT id, titulo, artista, pais, precio FROM CD WHERE id = ?";
         
         try (Connection conn = BaseDeDatos.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -50,21 +49,20 @@ public class ProductoDAO
                         rs.getString("titulo"),
                         rs.getString("artista"),
                         rs.getString("pais"),
-                        rs.getDouble("precio"),
-                        rs.getInt("stock")
+                        rs.getDouble("precio")
                     );
                 }
             }
             
         } catch (SQLException e) {
-            System.err.println("Error al intentar obtener producto por el ID: " + e.getMessage());
+            System.err.println("Error al intentar obtener CD por el ID: " + e.getMessage());
         }
         
         return null;
     }
 
-    public static CD obtenerProductoPorArtistaYTitulo(String artista, String titulo) {
-        String sql = "SELECT id, titulo, artista, pais, precio, stock FROM productos WHERE artista = ? AND titulo = ?";
+    public static CD obtenerCDPorArtistaYTitulo(String artista, String titulo) {
+        String sql = "SELECT id, titulo, artista, pais, precio FROM CD WHERE artista = ? AND titulo = ?";
         
         try (Connection conn = BaseDeDatos.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -79,8 +77,7 @@ public class ProductoDAO
                         rs.getString("titulo"),
                         rs.getString("artista"),
                         rs.getString("pais"),
-                        rs.getDouble("precio"),
-                        rs.getInt("stock")
+                        rs.getDouble("precio")
                     );
 
                     System.out.println("Datos CD obtenido: " + cdReturn);
@@ -90,7 +87,7 @@ public class ProductoDAO
             }
             
         } catch (SQLException e) {
-            System.err.println("Error al intentar obtener producto por Artista ("+artista+") y Titulo ("+titulo+"): " + e.getMessage());
+            System.err.println("Error al intentar obtener CD por Artista ("+artista+") y Titulo ("+titulo+"): " + e.getMessage());
         }
         
         return null;

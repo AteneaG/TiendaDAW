@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import tienda.CD;
+import tienda.Modelo.CD;
 
 public class UsuarioDAO {
      public static boolean registrarUsuario(String nombre, String nombreUsuario, String email, String password, String tarjetaTipo, String tarjetaNumero) {

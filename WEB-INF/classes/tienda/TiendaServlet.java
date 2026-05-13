@@ -5,6 +5,8 @@ import java.util.*;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import tienda.BD.*;
+import tienda.Modelo.CD;
+import tienda.Modelo.Carrito;
 
 public class TiendaServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
