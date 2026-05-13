@@ -1,30 +1,24 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Pago - Música para DAA</title>
+    <title>Registrar Usuario - Música para DAA</title>
     <meta charset="UTF-8">
     <style>
         body {
             background-color: #FDF5E6;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Times New Roman', Times, serif;
             margin: 0;
             padding: 20px;
-        }
-        h1 { 
-            text-align: center;
-            margin: 0;
-            line-height: 50px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 0 10px;
         }
         .header {
             text-align: center;
             margin-bottom: 20px;
         }
         .formulario-container {
-            max-width: 90%;
+            max-width: 500px;
             margin: 0 auto;
             background-color: white;
             padding: 30px;
@@ -44,8 +38,9 @@
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Times New Roman', Times, serif;
             font-size: 16px;
+            box-sizing: border-box;
         }
         .form-section {
             margin-bottom: 30px;
@@ -72,7 +67,6 @@
             text-decoration: none;
             font-size: 14px;
             display: inline-block;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .btn-primary {
             background-color: #4CAF50;
@@ -89,6 +83,14 @@
             margin-bottom: 20px;
             border-left: 4px solid #4CAF50;
         }
+        .error-box {
+            background-color: #fff5f5;
+            border: 1px solid #f44336;
+            color: #c0392b;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
         hr {
             border: 0;
             height: 1px;
@@ -104,66 +106,80 @@
         function validarFormulario() {
             var nombre = document.getElementById('nombre').value;
             var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
             var tipoTarjeta = document.getElementById('tipoTarjeta').value;
             var numeroTarjeta = document.getElementById('numeroTarjeta').value;
-            
+
             if (nombre.trim() === '') {
                 alert('Por favor, ingrese su nombre.');
                 return false;
             }
-            
+
             if (email.trim() === '') {
                 alert('Por favor, ingrese su correo electrónico.');
                 return false;
             }
-            
+
             var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
                 alert('Por favor, ingrese un correo electrónico válido.');
                 return false;
             }
-            
+
+            if (password.trim() === '') {
+                alert('Por favor, ingrese una contraseña.');
+                return false;
+            }
+
             if (tipoTarjeta === '') {
                 alert('Por favor, seleccione un tipo de tarjeta.');
                 return false;
             }
-            
+
             if (numeroTarjeta.trim() === '') {
                 alert('Por favor, ingrese el número de tarjeta.');
                 return false;
             }
-            
+
             var tarjetaRegex = /^[0-9]{13,19}$/;
             if (!tarjetaRegex.test(numeroTarjeta)) {
                 alert('Por favor, ingrese un número de tarjeta válido (solo números, entre 13 y 19 dígitos).');
                 return false;
             }
-            
+
             return true;
         }
     </script>
 </head>
 <body>
-    <div class="header">
+    <div class='header'>
         <table align="center" border="0">
-            <tr> 
-                <th><img src="${pageContext.request.contextPath}/img/musica.png" width="50" height="50"></th>
-                <th><h1>Pago</h1></th>
-                <th><img src="${pageContext.request.contextPath}/img/musica.png" width="50" height="50"></th>
-            </tr>  
+            <tr>
+                <th><IMG SRC="./Imagenes/musica.png" ALIGN="CENTER" width="50" height="50"></th>
+                <th><font face="Times New Roman,Times" size="+3">Música para DAA - Registro</font></th>
+                <th><IMG SRC="./Imagenes/musica.png" ALIGN="CENTER" width="50" height="50"></th>
+            </tr>
         </table>
     </div>
 
     <hr>
-    
+
     <div class="formulario-container">
+
+        <%-- Mostrar error si lo hay (viene del servlet cuando falla el registro) --%>
+        <c:if test="${not empty requestScope.error}">
+            <div class="error-box">
+                ${requestScope.error}
+            </div>
+        </c:if>
+
         <div class="mensaje-resumen">
-            <p>Está a punto de finalizar su compra. El total a pagar es: <strong>${sessionScope.totalFinal}€</strong> (IVA incluido).</p>
-            <p>Por favor, complete sus datos de contacto y pago para procesar la operación.</p>
+            <p>Cree su cuenta para continuar con la compra.</p>
         </div>
-        
-        <form method="post" action="../servlet/tienda" onsubmit="return validarFormulario();">
-            <input type="hidden" name="accion" value="confirmarPago">
+
+        <%-- action apunta a FormularioRegistro, que es formRegistro.java --%>
+        <form method="post" action="${pageContext.request.contextPath}/FormularioRegistro" onsubmit="return validarFormulario();">
+
             <div class="form-section">
                 <h3>Datos de Contacto</h3>
                 <div class="form-group">
@@ -174,45 +190,51 @@
                     <label for="email" class="required">Correo Electrónico</label>
                     <input type="email" id="email" name="email" placeholder="ejemplo@email.com">
                 </div>
+                <div class="form-group">
+                    <label for="password" class="required">Contraseña</label>
+                    <input type="password" id="password" name="password" placeholder="Ingrese una contraseña segura">
+                </div>
             </div>
-            
+
             <div class="form-section">
                 <h3>Datos de Pago</h3>
                 <div class="form-group">
                     <label for="tipoTarjeta" class="required">Tipo de Tarjeta</label>
                     <select id="tipoTarjeta" name="tipoTarjeta">
                         <option value="">Seleccione un tipo de tarjeta</option>
-                        <option value="Visa">Visa</option>
-                        <option value="MasterCard">MasterCard</option>
-                        <option value="American Express">American Express</option>
-                        <option value="Discover">Discover</option>
+                        <option value="visa">Visa</option>
+                        <option value="mastercard">MasterCard</option>
+                        <option value="amex">American Express</option>
+                        <option value="discover">Discover</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="numeroTarjeta" class="required">Número de Tarjeta</label>
-                    <input type="text" id="numeroTarjeta" name="numeroTarjeta" placeholder="Ingrese el número de tarjeta (sin espacios)">
+                    <input type="text" id="numeroTarjeta" name="numeroTarjeta" placeholder="Sin espacios, entre 13 y 19 dígitos">
                 </div>
                 <div class="form-group">
-                    <label for="fechaExpiracion" class="required">Fecha de Expiración</label>
-                    <input type="month" id="fechaExpiracion" name="fechaExpiracion" min="${requestScope.fechaMin}">
+                    <label for="fechaExpiracion">Fecha de Expiración</label>
+                    <input type="month" id="fechaExpiracion" name="fechaExpiracion"
+                           min="<%= java.time.LocalDate.now().getYear() %>-<%= String.format("%02d", java.time.LocalDate.now().getMonthValue()) %>">
                 </div>
                 <div class="form-group">
-                    <label for="codigoSeguridad" class="required">Código de Seguridad (CVV)</label>
+                    <label for="codigoSeguridad">Código de Seguridad (CVV)</label>
                     <input type="password" id="codigoSeguridad" name="codigoSeguridad" maxlength="4" placeholder="CVV">
                 </div>
             </div>
-            
+
             <div class="buttons-container">
-                <button type="submit" class="btn btn-primary">Finalizar Compra</button>
-                <a href="../servlet/tienda" class="btn btn-secondary">Volver al Carrito</a>
+                <button type="submit" class="btn btn-primary">Registrar Usuario</button>
+                <a href="${pageContext.request.contextPath}/FormularioCompra" class="btn btn-secondary">Volver al login</a>
             </div>
+
         </form>
     </div>
-    
+
     <hr>
-    
+
     <div style="text-align: center; margin-top: 10px; font-size: 12px; color: #666;">
-        <p>Todos los datos son procesados de forma segura. No almacenamos los datos completos de su tarjeta.</p>
+        <p>Todos los datos son procesados de forma segura.</p>
     </div>
 </body>
 </html>
