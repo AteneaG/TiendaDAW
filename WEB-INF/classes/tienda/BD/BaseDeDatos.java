@@ -22,9 +22,9 @@ public class BaseDeDatos {
             try {
                 Class.forName("org.postgresql.Driver");
                 connection = DriverManager.getConnection(URL, USER, PASSWORD);
-                System.out.println("\nConexión establecida con éxito.");
+                System.out.println("Conexión establecida con éxito.");
             } catch (ClassNotFoundException e) {
-                System.err.println("\nNo se pudo cargar el driver: " + e.getMessage());
+                System.err.println("No se pudo cargar el driver: " + e.getMessage());
                 throw new SQLException(e);
             }
         }

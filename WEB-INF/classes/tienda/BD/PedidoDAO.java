@@ -12,6 +12,8 @@ public class PedidoDAO {
     //Registrar PEDIDOS
     public static boolean registrarPedidoMultiplesCDs(int usuarioId, ArrayList<detallePedido> carrito) {
         Connection conn = null;
+        System.out.println("\nPedidoDAO: Probando conexion: ");
+
         try {
             conn = BaseDeDatos.getConnection();
             conn.setAutoCommit(false); // Iniciar transacción
@@ -40,13 +42,12 @@ public class PedidoDAO {
                     stmtDetalles.setInt(1, pedidoId);
                     stmtDetalles.setInt(2, dp.getCD().getId());
                     stmtDetalles.setInt(3, dp.getCantidad());
-                    try (ResultSet rs = stmtDetalles.executeQuery()){
-                        if (rs.next()) {
-                            System.out.println("Detalle del pedido registrado con éxito para pedido ID: " + pedidoId);
-                        }else {
-                            throw new SQLException("No se pudo registrar el detalle del pedido");
-                        }
-                    }
+                    int filasInsertadas = stmtDetalles.executeUpdate();
+                if (filasInsertadas > 0) {
+                    System.out.println("Detalle del pedido registrado con éxito para pedido ID: " + pedidoId);
+                } else {
+                    throw new SQLException("No se pudo registrar el detalle del pedido");
+                }
                 }
                 
             }
@@ -91,6 +92,8 @@ public class PedidoDAO {
 
     public static int registrarPedidoUnCD(detallePedido detalle) {
         Connection conn = null;
+        System.out.println("\nPedidoDAO: Probando conexion: ");
+
         try {
             conn = BaseDeDatos.getConnection();
             conn.setAutoCommit(false); // Iniciar transacción
@@ -117,12 +120,11 @@ public class PedidoDAO {
                 stmtDetalles.setInt(1, pedidoId);
                 stmtDetalles.setInt(2, detalle.getCD().getId());
                 stmtDetalles.setInt(3, detalle.getCantidad());
-                try (ResultSet rs = stmtDetalles.executeQuery()){
-                    if (rs.next()) {
-                        System.out.println("Detalle del pedido registrado con éxito para pedido ID: " + pedidoId);
-                    } else {
-                        throw new SQLException("No se pudo registrar el detalle del pedido");
-                    }
+                int filasInsertadas = stmtDetalles.executeUpdate();
+                if (filasInsertadas > 0) {
+                    System.out.println("Detalle del pedido registrado con éxito para pedido ID: " + pedidoId);
+                } else {
+                    throw new SQLException("No se pudo registrar el detalle del pedido");
                 }
             }
 
@@ -168,26 +170,33 @@ public class PedidoDAO {
     //Actualizar datos PEDIDOS
     public static boolean anhadirDetalleAPedido(int pedidoId, detallePedido dp) {
         Connection conn = null;
+        System.out.println("\nPedidoDAO: Probando conexion: ");
+
         try {
             conn = BaseDeDatos.getConnection();
-            conn.setAutoCommit(false); // Iniciar transacción
-
-
-            // 1. Insertar los productos del pedido
-            String sqlDetalles = "INSERT INTO detalle_pedidos (pedido_id, producto_id, cantidad)" +
-                                    " VALUES (?, ?, ?)";
-            try (PreparedStatement stmtDetalles = conn.prepareStatement(sqlDetalles)) {
-                stmtDetalles.setInt(1, pedidoId);
-                stmtDetalles.setInt(2, dp.getCD().getId());
-                stmtDetalles.setInt(3, dp.getCantidad());
-                try (ResultSet rs = stmtDetalles.executeQuery()){
-                    if (rs.next()) {
+            conn.setAutoCommit(false);
+            try{
+                // 1. Insertar los productos del pedido
+                String sqlDetalles = "INSERT INTO detalle_pedidos (pedido_id, producto_id, cantidad)" +
+                                        " VALUES (?, ?, ?)";
+                try (PreparedStatement stmtDetalles = conn.prepareStatement(sqlDetalles)) {
+                    stmtDetalles.setInt(1, pedidoId);
+                    stmtDetalles.setInt(2, dp.getCD().getId());
+                    stmtDetalles.setInt(3, dp.getCantidad());
+                    int filasInsertadas = stmtDetalles.executeUpdate();
+                    if (filasInsertadas > 0) {
                         System.out.println("Detalle del pedido registrado con éxito para pedido ID: " + pedidoId);
                     } else {
                         throw new SQLException("No se pudo registrar el detalle del pedido");
                     }
+
                 }
+            } catch (SQLException e) {
+                System.err.println("Error al registrar detalle del pedido: " + e.getMessage());
+                conn.rollback();
+                return false;
             }
+            
 
             // Opcionalmente, podemos obtener el total final para confirmación
             double totalFinal = 0;
@@ -228,23 +237,33 @@ public class PedidoDAO {
     }
 
     public static boolean actualizarUsuarioPedido(int pedidoId, int usuarioId) {
-        String sql = "UPDATE pedidos SET usuario_id = ? WHERE id = ?";
-        
-        try (Connection conn = BaseDeDatos.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
-            stmt.setInt(1, usuarioId);
-            stmt.setInt(2, pedidoId);
-            int filasAfectadas = stmt.executeUpdate();
-            return filasAfectadas > 0; // Retorna true si se actualizó al menos un registro
-            
+        Connection conn = null;
+        System.out.println("\nPedidoDAO: Probando conexion: ");
+
+        try {
+            conn = BaseDeDatos.getConnection();
+            String sql = "UPDATE pedidos SET usuario_id = ? WHERE id = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, usuarioId);
+                stmt.setInt(2, pedidoId);
+                int filasAfectadas = stmt.executeUpdate();
+                if (filasAfectadas > 0) {
+                    System.out.println("Usuario actualizado con éxito para pedido ID: " + pedidoId);
+                    return true;
+                } else {
+                    System.err.println("No se pudo actualizar el usuario para pedido ID: " + pedidoId);
+                    return false;
+                }
+            }
         } catch (SQLException e) {
             System.err.println("Error al actualizar usuario del pedido: " + e.getMessage());
             return false;
-        }
+        } 
     }
 
     public static boolean actualizarCantidad(int pedidoId, int productoId, int nuevaCantidad) {
+        System.out.println("\nPedidoDAO: Probando conexion: ");
+
         String sql = "UPDATE detalle_pedidos SET cantidad = ? WHERE pedido_id = ? AND producto_id = ?";
         
         try (Connection conn = BaseDeDatos.getConnection();
@@ -253,9 +272,13 @@ public class PedidoDAO {
             stmt.setInt(1, nuevaCantidad);
             stmt.setInt(2, pedidoId);
             stmt.setInt(3, productoId);
-            int filasAfectadas = stmt.executeUpdate();
 
-            System.out.println("\nCantidad actualizada para pedido ID " + pedidoId + ", CD ID " + productoId + ": " + nuevaCantidad);
+            System.out.println("Actualizando: pedidoId=" + pedidoId + ", productoId=" + productoId + ", nuevaCantidad=" + nuevaCantidad);
+            int filasAfectadas = stmt.executeUpdate();
+            System.out.println("Filas afectadas: " + filasAfectadas);
+
+            if (filasAfectadas > 0) System.out.println("Cantidad actualizada para pedido ID " + pedidoId + ", CD ID " + productoId + ": " + nuevaCantidad);
+            else System.err.println("No se pudo actualizar la cantidad para pedido ID " + pedidoId + ", CD ID " + productoId);
 
             return filasAfectadas > 0; // Retorna true si se actualizó al menos un registro
             
@@ -266,7 +289,9 @@ public class PedidoDAO {
     }
 
     public static boolean actualizarFechaPedido(int pedidoId) {
-        String sql = "UPDATE pedidos SET fecha = ? WHERE id = ?";
+        String sql = "UPDATE pedidos SET fecha_pedido = ? WHERE id = ?";
+        
+        System.out.println("\nPedidoDAO: Probando conexion: ");
         
         try (Connection conn = BaseDeDatos.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -274,6 +299,9 @@ public class PedidoDAO {
             stmt.setInt(1, (int) (System.currentTimeMillis() / 1000)); // Establecer la fecha actual en formato timestamp
             stmt.setInt(2, pedidoId);
             int filasAfectadas = stmt.executeUpdate();
+
+
+
             return filasAfectadas > 0; // Retorna true si se actualizó al menos un registro
             
         } catch (SQLException e) {
@@ -283,6 +311,9 @@ public class PedidoDAO {
     }
 
     public static boolean eliminarDetallePedido(int pedidoId, int detalleId) {
+
+        System.out.println("\nPedidoDAO: Probando conexion: ");
+        
         String sql = "DELETE FROM detalle_pedidos WHERE pedido_id = ? AND producto_id = ?";
         
         //Eliminar el total del pedido.
@@ -303,6 +334,7 @@ public class PedidoDAO {
 
     public static boolean actualizarTotalPedido(int pedidoID, double nuevoTotal) {
         String sql = "UPDATE pedidos SET total = ? WHERE id = ?";
+        System.out.println("\nPedidoDAO: Probando conexion: ");
         
         try (Connection conn = BaseDeDatos.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -321,6 +353,8 @@ public class PedidoDAO {
     //Eliminar PEDIDOS
     public static boolean eliminarPedido(int pedidoId) {
         String sql = "DELETE FROM pedidos WHERE id = ?";
+        
+        System.out.println("\nPedidoDAO: Probando conexion: ");
         
         try (Connection conn = BaseDeDatos.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

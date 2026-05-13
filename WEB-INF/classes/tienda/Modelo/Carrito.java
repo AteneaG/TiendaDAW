@@ -81,6 +81,6 @@ public class Carrito {
             total += detalle.getCD().getPrecio() * detalle.getCantidad();
         }
         PedidoDAO.actualizarTotalPedido(this.pedidoID, total);
-        return Math.round(total * 100.0) / 100.0;
+        return total;
     }
 }

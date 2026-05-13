@@ -75,8 +75,6 @@ public class TiendaServlet extends HttpServlet {
                 System.err.println("\nCD no encontrado por  Artista ("+artista+") y Titulo ("+titulo+")");
                 return;
             }
-
-            request.getRequestDispatcher("/WEB-INF/views/carrito.jsp").forward(request, response);
         }
     }   
 

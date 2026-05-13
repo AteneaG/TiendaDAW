@@ -11,7 +11,8 @@ public class CDDAO
     public static List<CD> obtenerTodosLosCDs() {
         List<CD> cds = new ArrayList<>();
         String sql = "SELECT id, titulo, artista, pais, precio FROM \"CD\"";
-        
+        System.out.println("\nCDDAO: Probando conexion: ");
+
         try (Connection conn = BaseDeDatos.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -36,7 +37,8 @@ public class CDDAO
     
     public static CD obtenerCDPorId(int id) {
         String sql = "SELECT id, titulo, artista, pais, precio FROM \"CD\" WHERE id = ?";
-        
+        System.out.println("\nCDDAO: Probando conexion: ");
+
         try (Connection conn = BaseDeDatos.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
@@ -63,9 +65,10 @@ public class CDDAO
 
     public static CD obtenerCDPorArtistaYTitulo(String artista, String titulo) {
         Connection conn = null;
+        System.out.println("\nCDDAO: Probando conexion: ");
+
         try {
             conn = BaseDeDatos.getConnection();
-            conn.setAutoCommit(false); // Iniciar transacción
 
             // 1. Insertar el pedido (el total se actualizará automáticamente mediante el trigger)
             String sql = "SELECT id, titulo, artista, pais, precio FROM \"CD\" WHERE artista = ? AND titulo = ?";
@@ -84,17 +87,17 @@ public class CDDAO
                             rs.getDouble("precio")
                         );
                     
-                        System.out.println("\nDatos CD obtenido: " + cdReturn);
+                        System.out.println("Datos CD obtenido: " + cdReturn);
                     
                         return cdReturn;
                     }else {
-                        throw new SQLException("\nNo se pudo obtener el CD");
+                        throw new SQLException("No se pudo obtener el CD");
                     }
                 }
             }
             
         } catch (SQLException e) {
-            System.err.println("\nError al intentar obtener CD por Artista ("+artista+") y Titulo ("+titulo+"): " + e.getMessage());
+            System.err.println("Error al intentar obtener CD por Artista ("+artista+") y Titulo ("+titulo+"): " + e.getMessage());
         }
         
         return null;
