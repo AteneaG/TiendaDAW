@@ -9,6 +9,7 @@ import tienda.Modelo.detallePedido;
 
 public class PedidoDAO {
 
+    //Registrar PEDIDOS
     public static boolean registrarPedidoMultiplesCDs(int usuarioId, ArrayList<detallePedido> carrito) {
         Connection conn = null;
         try {
@@ -84,7 +85,7 @@ public class PedidoDAO {
         }
     }
 
-    public static int registrarPedidoUnCD(int usuarioId, detallePedido detalle) {
+    public static int registrarPedidoUnCD(detallePedido detalle) {
         Connection conn = null;
         try {
             conn = BaseDeDatos.getConnection();
@@ -92,11 +93,10 @@ public class PedidoDAO {
 
             // 1. Insertar el pedido (el total se actualizará automáticamente mediante el trigger)
             String sqlPedido = "INSERT INTO pedidos (usuario_id, fecha_pedido, total)" + 
-                                "VALUES (?, CURRENT_TIMESTAMP, ?) RETURNING id";
+                                "VALUES (NULL, NULL, ?) RETURNING id";
             int pedidoId;
             try (PreparedStatement stmtPedido = conn.prepareStatement(sqlPedido)) {
-                stmtPedido.setInt(1, usuarioId);
-                stmtPedido.setDouble(2, detalle.getCD().getPrecio() * detalle.getCantidad());
+                stmtPedido.setDouble(1, detalle.getCD().getPrecio() * detalle.getCantidad());
                 try (ResultSet rs = stmtPedido.executeQuery()) {
                     if (rs.next()) {
                         pedidoId = rs.getInt(1);
@@ -154,6 +154,8 @@ public class PedidoDAO {
         }
     }
 
+    
+    //Actualizar datos PEDIDOS
     public static boolean anhadirDetalleAPedido(int pedidoId,  ArrayList<detallePedido> carrito) {
         Connection conn = null;
         try {
@@ -211,18 +213,36 @@ public class PedidoDAO {
         }
     }
 
-    public static boolean eliminarPedido(int pedidoId) {
-        String sql = "DELETE FROM pedidos WHERE id = ?";
+    public static boolean actualizarUsuarioPedido(int pedidoId, int usuarioId) {
+        String sql = "UPDATE pedidos SET usuario_id = ? WHERE id = ?";
         
         try (Connection conn = BaseDeDatos.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setInt(1, pedidoId);
+            stmt.setInt(1, usuarioId);
+            stmt.setInt(2, pedidoId);
             int filasAfectadas = stmt.executeUpdate();
-            return filasAfectadas > 0; // Retorna true si se eliminó al menos un registro
+            return filasAfectadas > 0; // Retorna true si se actualizó al menos un registro
             
         } catch (SQLException e) {
-            System.err.println("Error al eliminar pedido: " + e.getMessage());
+            System.err.println("Error al actualizar usuario del pedido: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public static boolean actualizarFechaPedido(int pedidoId) {
+        String sql = "UPDATE pedidos SET fecha = ? WHERE id = ?";
+        
+        try (Connection conn = BaseDeDatos.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, (int) (System.currentTimeMillis() / 1000)); // Establecer la fecha actual en formato timestamp
+            stmt.setInt(2, pedidoId);
+            int filasAfectadas = stmt.executeUpdate();
+            return filasAfectadas > 0; // Retorna true si se actualizó al menos un registro
+            
+        } catch (SQLException e) {
+            System.err.println("Error al actualizar fecha del pedido: " + e.getMessage());
             return false;
         }
     }
@@ -245,23 +265,22 @@ public class PedidoDAO {
         }
     }
 
-    public static int obtenerIdPedidoDelDetalle(int detalleId) {
-        String sql = "SELECT pedido_id FROM detalle_pedidos WHERE id = ?";
+
+    //Eliminar PEDIDOS
+    public static boolean eliminarPedido(int pedidoId) {
+        String sql = "DELETE FROM pedidos WHERE id = ?";
         
         try (Connection conn = BaseDeDatos.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setInt(1, detalleId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt("pedido_id");
-                }
-            }
+            stmt.setInt(1, pedidoId);
+            int filasAfectadas = stmt.executeUpdate();
+            return filasAfectadas > 0; // Retorna true si se eliminó al menos un registro
             
         } catch (SQLException e) {
-            System.err.println("Error al obtener ID del pedido para el detalle: " + e.getMessage());
+            System.err.println("Error al eliminar pedido: " + e.getMessage());
+            return false;
         }
-        
-        return -1; // Retorna -1 si no se encontró o hubo un error
     }
+
 }
