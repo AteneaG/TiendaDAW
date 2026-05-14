@@ -59,6 +59,30 @@ public class UsuarioDAO {
     }
 
     /**
+     * Obtiene los datos de un usuario dado su email.
+     */
+    public static java.util.Map<String, String> obtenerDatosUsuario(String email) {
+        String sql = "SELECT id, email, tarjeta_tipo, tarjeta_numero FROM usuarios WHERE email = ?";
+        try (Connection conn = BaseDeDatos.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    java.util.Map<String, String> datos = new java.util.HashMap<>();
+                    datos.put("nombreUsuario", rs.getString("id"));   // id = nombreUsuario
+                    datos.put("emailUsuario",  rs.getString("email"));
+                    datos.put("tipoTarjeta",   rs.getString("tarjeta_tipo"));
+                    datos.put("numTarjeta",    rs.getString("tarjeta_numero"));
+                    return datos;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener datos de usuario: " + e.getMessage());
+        }
+        return null;
+    }
+
+    /**
      * Devuelve el id (nombreUsuario) del usuario dado su email.
      * Retorna -1 si no existe.
      */
