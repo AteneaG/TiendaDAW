@@ -93,51 +93,48 @@ public class TiendaServlet extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/index.html");
             }
 
-        } else {                                                                         // (F2) Añadir CD al carrito (F2)
-            //Leer datos del formulario
+        } else {
             String cdStr = request.getParameter("cd");
             String cantidadStr = request.getParameter("cantidad");
             int cantidad = Integer.parseInt(cantidadStr.trim());
-
+                
             StringTokenizer t = new StringTokenizer(cdStr, "|");
             String titulo = t.nextToken().trim();
             String artista = t.nextToken().trim();
-
+                
             CD cd = CDDAO.obtenerCDPorArtistaYTitulo(artista, titulo);
             detallePedido dp = new detallePedido(cd, cantidad);
-
-            if (cd != null && dp != null) {
-                //Cuando añade un carrito si este no existe, lo crea con el CD que va a crear
+                
+            if (cd != null) {
                 if (session.getAttribute("carrito") == null) {
-                    int pedidoID = PedidoDAO.registrarPedidoUnCD(dp);              // ID Pedido BD
-                    session.setAttribute("carrito", new Carrito(dp));   
-                    carrito = (Carrito) session.getAttribute("carrito");
+                    // Primer CD: crear pedido en BD y carrito en sesión
+                    int pedidoID = PedidoDAO.registrarPedidoUnCD(dp);
+                    carrito = new Carrito(dp);
                     carrito.setPedidoID(pedidoID);
-                }
-                else {
-                    carrito.agregarDetalle(dp);
+                    session.setAttribute("carrito", carrito);
+                } else {
+                    // Ya existe carrito: distinguir si el CD ya estaba o es nuevo
                     if (carrito.getDetallesPedido().containsKey(cd.getId())) {
-                        detallePedido existingDp = carrito.getDetallesPedido().get(cd.getId());
-                        existingDp.setCantidad(existingDp.getCantidad() + cantidad);
-                        PedidoDAO.actualizarCantidad(carrito.getPedidoID(), cd.getId(), existingDp.getCantidad());
+                        // CD ya existe: calcular nueva cantidad ANTES de agregarDetalle
+                        int cantidadAnterior = carrito.getDetallesPedido().get(cd.getId()).getCantidad();
+                        carrito.agregarDetalle(dp); // suma internamente
+                        PedidoDAO.actualizarCantidad(carrito.getPedidoID(), cd.getId(), cantidadAnterior + cantidad);
                     } else {
+                        // CD nuevo: añadir a carrito y luego a BD
+                        carrito.agregarDetalle(dp);
                         PedidoDAO.anhadirDetalleAPedido(carrito.getPedidoID(), carrito.getDetallesPedido().get(cd.getId()));
                     }
-
                 }
-
-                System.out.println("\nLogged? "+logged+" - Email en sesión: "+mail);
-                carrito = (Carrito) session.getAttribute("carrito");
-                if(logged) {
+            
+                if (logged) {
                     carrito.setUsuarioID(UsuarioDAO.obtenerIdUsuario(mail));
                     PedidoDAO.actualizarUsuarioPedido(carrito.getPedidoID(), carrito.getUsuarioID());
                 }
             } else {
-                System.err.println("\nCD no encontrado por  Artista ("+artista+") y Titulo ("+titulo+")");
-                
+                System.err.println("\nCD no encontrado por Artista (" + artista + ") y Titulo (" + titulo + ")");
             }
+        
             response.sendRedirect(request.getContextPath() + "/index.html");
-            
         }
     }   
 
