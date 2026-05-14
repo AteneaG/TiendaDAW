@@ -65,6 +65,7 @@ public class TiendaServlet extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/index.html");
             }
         } else if (accion != null && accion.equals("registrarUsuario")) {      // Registrar nuevo usuario
+
             String email = request.getParameter("email");
             String password = request.getParameter("password");
             String tipoTarjeta = request.getParameter("tipoTarjeta");
@@ -82,6 +83,7 @@ public class TiendaServlet extends HttpServlet {
                 carrito.setUsuarioID(UsuarioDAO.obtenerIdUsuario(email));
                 PedidoDAO.actualizarUsuarioPedido(carrito.getPedidoID(), carrito.getUsuarioID());
             }
+
 
             String redirect = (String) session.getAttribute("redirectAfterLogin");
             if (redirect != null) {
