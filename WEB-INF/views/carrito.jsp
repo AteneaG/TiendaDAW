@@ -160,13 +160,13 @@
         </div>
     </form>
     
-    <!--TODO: CAMBIAR A GET -->
+
     <c:if test="${not empty sessionScope.carrito.detallesPedido}">
         <div class="buttons-container">
-            <form method="post" action="../servlet/tienda">
-                <input type="hidden" name="accion" value="pagar">
-                <input type="submit" value="Confirmar Compra" class="btn btn-primary">
-            </form>
+            <a href="${pageContext.request.contextPath}/servlet/tienda?accion=pagar" 
+               class="btn btn-primary">
+                Confirmar Compra
+            </a>
         </div>
     </c:if>
 
