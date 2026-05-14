@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import tienda.Modelo.CD;
+import tienda.Modelo.Carrito;
 import tienda.Modelo.detallePedido;
 
 public class PedidoDAO {
@@ -295,7 +296,7 @@ public class PedidoDAO {
 
         try (Connection conn = BaseDeDatos.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-                
+
             stmt.setInt(1, pedidoId);
             int filasAfectadas = stmt.executeUpdate();
             if (filasAfectadas > 0) System.out.println("Fecha actualizada para pedido ID: " + pedidoId);
@@ -358,6 +359,29 @@ public class PedidoDAO {
         try (Connection conn = BaseDeDatos.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
+            stmt.setInt(1, pedidoId);
+            int filasAfectadas = stmt.executeUpdate();
+            return filasAfectadas > 0; // Retorna true si se eliminó al menos un registro
+            
+        } catch (SQLException e) {
+            System.err.println("Error al eliminar pedido: " + e.getMessage());
+            return false;
+        }
+    }
+
+    //OBTENER DATOS PEDIDOS
+    public static Carrito obtenerDatosPedido(int pedidoId) {
+        String sql = "SELECT * FROM pedidos WHERE id = ?";
+        
+        System.out.println("\nPedidoDAO: Probando conexion: ");
+        
+        try (Connection conn = BaseDeDatos.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            Carrito carrito = new Carrito(pedidoId, rs.getInt("usuario_id"));
+            // por cada fila del ResultSet:
+            carrito.getDetallesPedido().put(cd.getId(), new detallePedido(cd, cantidad));
+
             stmt.setInt(1, pedidoId);
             int filasAfectadas = stmt.executeUpdate();
             return filasAfectadas > 0; // Retorna true si se eliminó al menos un registro

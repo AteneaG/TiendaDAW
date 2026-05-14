@@ -17,7 +17,11 @@ public class Carrito {
         this.detallesPedido.put(dp.getCD().getId(), dp);                //Añadir el CD al carrito
     }
 
-
+    public Carrito(int pedidoID, int usuarioID) {
+        this.usuarioID = usuarioID;
+        this.pedidoID = pedidoID;
+        this.detallesPedido = new HashMap<>();
+    }
     
 
     //GETTERS
