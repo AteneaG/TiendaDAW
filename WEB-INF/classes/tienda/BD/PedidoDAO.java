@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import tienda.Modelo.CD;
+import tienda.Modelo.Carrito;
 import tienda.Modelo.detallePedido;
 
 public class PedidoDAO {
@@ -289,21 +290,20 @@ public class PedidoDAO {
     }
 
     public static boolean actualizarFechaPedido(int pedidoId) {
-        String sql = "UPDATE pedidos SET fecha_pedido = ? WHERE id = ?";
-        
-        System.out.println("\nPedidoDAO: Probando conexion: ");
-        
+        System.out.println("\nPedidoDAO: Actualizando fecha pedido ID: " + pedidoId);
+
+        String sql = "UPDATE pedidos SET fecha_pedido = CURRENT_TIMESTAMP WHERE id = ?";
+
         try (Connection conn = BaseDeDatos.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
-            stmt.setInt(1, (int) (System.currentTimeMillis() / 1000)); // Establecer la fecha actual en formato timestamp
-            stmt.setInt(2, pedidoId);
+
+            stmt.setInt(1, pedidoId);
             int filasAfectadas = stmt.executeUpdate();
+            if (filasAfectadas > 0) System.out.println("Fecha actualizada para pedido ID: " + pedidoId);
+            else System.err.println("No se encontró pedido con ID: " + pedidoId);
 
+            return filasAfectadas > 0;
 
-
-            return filasAfectadas > 0; // Retorna true si se actualizó al menos un registro
-            
         } catch (SQLException e) {
             System.err.println("Error al actualizar fecha del pedido: " + e.getMessage());
             return false;
@@ -366,6 +366,72 @@ public class PedidoDAO {
         } catch (SQLException e) {
             System.err.println("Error al eliminar pedido: " + e.getMessage());
             return false;
+        }
+    }
+
+
+    // OBTENER DATOS PEDIDOS
+    public static Carrito obtenerDatosPedido(int pedidoId) {
+        
+        System.out.println("\nPedidoDAO: Probando conexion: ");
+
+        String sql =
+            "SELECT p.usuario_id, dp.cantidad, " +
+            "       c.id AS cd_id, c.titulo, c.artista, c.pais, c.precio " +
+            "FROM pedidos p " +
+            "JOIN detalle_pedidos dp ON dp.pedido_id = p.id " +
+            "JOIN \"CD\" c ON c.id = dp.producto_id " +
+            "WHERE p.id = ?";
+
+        System.out.println("[DEBUG] SQL preparada:");
+        System.out.println(sql);
+
+        try (Connection conn = BaseDeDatos.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, pedidoId);
+
+
+            try (ResultSet rs = stmt.executeQuery()) {
+
+                Carrito carrito = null;
+
+                int contadorProductos = 0;
+
+                while (rs.next()) {
+
+                    int usuarioId = rs.getInt("usuario_id");
+
+                    if (carrito == null) {
+                        carrito = new Carrito(pedidoId, usuarioId);
+                    }
+
+                    int cdId = rs.getInt("cd_id");
+                    String titulo = rs.getString("titulo");
+                    String artista = rs.getString("artista");
+                    String pais = rs.getString("pais");
+                    double precio = rs.getDouble("precio");
+                    int cantidad = rs.getInt("cantidad");
+
+                    CD cd = new CD(cdId, titulo, artista, pais, precio);
+
+                    detallePedido detalle = new detallePedido(cd, cantidad);
+
+                    carrito.getDetallesPedido().put(cd.getId(), detalle);
+
+                    contadorProductos++;
+
+                }
+
+                return carrito;
+            }
+
+        } catch (SQLException e) {
+
+            System.err.println("\n[ERROR] Error SQL al obtener datos del pedido.");
+            e.printStackTrace();
+
+            return null;
         }
     }
 

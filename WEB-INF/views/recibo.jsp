@@ -1,44 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.ArrayList, java.util.Date, java.text.SimpleDateFormat" %>
-<%@ page import="CD.CD" %> 
-
-<%
-    // Recuperamos el carrito desde la sesión
-    ArrayList<CD> carrito = (ArrayList<CD>) session.getAttribute("carrito");
-    if (carrito == null) {
-        carrito = new ArrayList<CD>();
-    }
-    
-    // Calculamos totales
-    double subtotal = 0.0;
-    double iva = 0.0;
-    double total = 0.0;
-    
-    for (CD elemento : carrito) {
-        subtotal += elemento.getPrecio() * elemento.getCantidad();
-    }
-    iva = subtotal * 0.21; // 21% de IVA
-    total = subtotal + iva;
-    
-    // Generamos fecha y número de factura
-    Date fechaActual = new Date();
-    SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-    String numeroFactura = "F-" + System.currentTimeMillis();
-
-    String nombre = (String) session.getAttribute("nombreCliente");
-    String email = (String) session.getAttribute("emailCliente");
-    String tipoTarjeta = (String) session.getAttribute("tipoTarjeta");
-    String numeroTarjeta = (String) session.getAttribute("numeroTarjeta");
-
-    String tarjetaFormateada = "****";
-    if (numeroTarjeta != null && numeroTarjeta.length() >= 4) {
-        int longitud = numeroTarjeta.length();
-        String ultimos4 = numeroTarjeta.substring(longitud - 4);
-        String asteriscos = "*".repeat(longitud - 4);
-        tarjetaFormateada = asteriscos + ultimos4;
-    }
-%>
-
+<%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"  %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -47,9 +9,15 @@
     <style>
         body {
             background-color: #FDF5E6;
-            font-family: 'Times New Roman', Times, serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
+        }
+        h1 {
+            margin: 0;
+            line-height: 50px;
+            padding: 0 15px;
+            font-size: 2em;
         }
         .header {
             text-align: center;
@@ -68,12 +36,9 @@
             justify-content: space-between;
             margin-bottom: 20px;
         }
-        .info-cliente, .info-tienda {
-            width: 48%;
-        }
+        .info-cliente, .info-tienda { width: 48%; }
         table {
             width: 100%;
-            margin: 0 auto;
             border-collapse: collapse;
         }
         th, td {
@@ -81,9 +46,7 @@
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
-        th {
-            background-color: #f2f2f2;
-        }
+        th { background-color: #f2f2f2; }
         .total-section {
             margin-top: 20px;
             text-align: right;
@@ -117,15 +80,10 @@
             text-decoration: none;
             font-size: 14px;
             display: inline-block;
+            font-family: inherit;
         }
-        .btn-primary {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .btn-secondary {
-            background-color: #2196F3;
-            color: white;
-        }
+        .btn-primary   { background-color: #4CAF50; color: white; }
+        .btn-secondary { background-color: #2196F3; color: white; }
         .thank-you {
             text-align: center;
             margin-top: 30px;
@@ -138,29 +96,25 @@
             background-color: #ccc;
             margin: 20px 0;
         }
-        @media print {
-            .buttons-container {
-                display: none;
-            }
-        }
+        @media print { .buttons-container { display: none; } }
     </style>
 </head>
 <body>
-    <div class='header'>
+
+    <div class="header">
         <table align="center" border="0">
-            <tr> 
-                <th><IMG SRC="./Imagenes/musica.png" ALIGN="CENTER" width="50" height="50"></th>
-                <th><font face="Times New Roman,Times" size="+3">Música para DAA - Recibo de Compra</font></th>
-                <th><IMG SRC="./Imagenes/musica.png" ALIGN="CENTER" width="50" height="50"></th>
-            </tr>  
+            <tr>
+                <th><img src="${pageContext.request.contextPath}/img/musica.png" width="50" height="50"></th>
+                <th><h1>Recibo de Compra</h1></th>
+                <th><img src="${pageContext.request.contextPath}/img/musica.png" width="50" height="50"></th>
+            </tr>
         </table>
     </div>
 
     <hr>
-    
+
     <div class="recibo">
-        
-        <!-- Información de factura -->
+
         <div class="info-factura">
             <div class="info-tienda">
                 <h3>Información de la Tienda</h3>
@@ -172,15 +126,12 @@
             </div>
             <div class="info-cliente">
                 <h3>Detalles del Recibo</h3>
-                <p><strong>Nombre:</strong> <%= nombre %></p>
-                <p><strong>Email:</strong> <%= email %></p>
-                <p><strong>Número de Factura:</strong> <%= numeroFactura %></p>
-                <p><strong>Fecha y Hora:</strong> <%= formatoFecha.format(fechaActual) %></p>
-                <p><strong>Método de Pago:</strong> <%= tipoTarjeta %> acabada en <%= tarjetaFormateada %></p>
+                <p><strong>Email:</strong> ${requestScope.emailRecibo}</p>
+                <p><strong>Número de Factura:</strong> FAC-${requestScope.numeroFactura}</p>
+                <p><strong>Método de Pago:</strong> ${requestScope.tipoTarjeta} acabada en ****${requestScope.numTarjeta}</p>
             </div>
         </div>
-        
-        <!-- Tabla de productos -->
+
         <h3>Detalle de Productos</h3>
         <table>
             <tr>
@@ -191,53 +142,44 @@
                 <th>Cantidad</th>
                 <th>Subtotal</th>
             </tr>
-            
-            <% 
-            for (CD elemento : carrito) {
-                double subtotalProducto = elemento.getPrecio() * elemento.getCantidad();
-            %>
+            <c:forEach var="dp" items="${requestScope.carritoRecibo.detallesPedido.values()}">
                 <tr>
-                    <td><%= elemento.getTitulo() %></td>
-                    <td><%= elemento.getArtista() %></td>
-                    <td><%= elemento.getPais() %></td>
-                    <td>$<%= String.format("%.2f", elemento.getPrecio()) %></td>
-                    <td><%= elemento.getCantidad() %></td>
-                    <td>$<%= String.format("%.2f", subtotalProducto) %></td>
+                    <td>${dp.CD.titulo}</td>
+                    <td>${dp.CD.artista}</td>
+                    <td>${dp.CD.pais}</td>
+                    <td>${dp.CD.precio} €</td>
+                    <td>${dp.cantidad}</td>
+                    <td><fmt:formatNumber value="${dp.CD.precio * dp.cantidad}" pattern="#,##0.00"/> €</td>
                 </tr>
-            <% } %>
+            </c:forEach>
         </table>
-        
-        <!-- Sección de totales -->
+
         <div class="total-section">
             <div class="total-line">
                 <div class="total-label">Subtotal:</div>
-                <div class="total-value">$<%= String.format("%.2f", subtotal) %></div>
+                <div class="total-value">${requestScope.subtotalFinal} €</div>
             </div>
             <div class="total-line">
                 <div class="total-label">IVA (21%):</div>
-                <div class="total-value">$<%= String.format("%.2f", iva) %></div>
+                <div class="total-value">${requestScope.ivaFinal} €</div>
             </div>
             <div class="total-line" style="font-weight: bold; font-size: 1.2em;">
                 <div class="total-label">TOTAL:</div>
-                <div class="total-value">$<%= String.format("%.2f", total) %></div>
+                <div class="total-value">${requestScope.totalFinal} €</div>
             </div>
         </div>
-        
-        <!-- Mensaje de agradecimiento -->
+
         <div class="thank-you">
-            <p>¡Gracias por su compra! Esperamos verle de nuevo pronto.</p>
+            <p>¡Gracias por su compra, ${requestScope.emailRecibo}! Esperamos verle de nuevo pronto.</p>
         </div>
-        
-        <!-- Botones de acción -->
+
         <div class="buttons-container">
-            <form method="post" action="<%= request.getContextPath() %>/FormularioCompra">
-                <button type="submit" name="accion" value="confirmarCompra" class="btn btn-primary">Volver al inicio</button>
-                <button type="button" onclick="window.print()" class="btn btn-secondary">Imprimir Recibo</button>
-            </form>
+            <a href="${pageContext.request.contextPath}/index.html" class="btn btn-primary">Volver al inicio</a>
+            <button type="button" onclick="window.print()" class="btn btn-secondary">Imprimir Recibo</button>
         </div>
-        
+
     </div>
-    
+
     <hr>
 </body>
 </html>

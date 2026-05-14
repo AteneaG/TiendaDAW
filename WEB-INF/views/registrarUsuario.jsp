@@ -178,7 +178,8 @@
         </div>
 
         <%-- action apunta a FormularioRegistro, que es formRegistro.java --%>
-        <form method="post" action="${pageContext.request.contextPath}/FormularioRegistro" onsubmit="return validarFormulario();">
+        <form method="post" action="../servlet/tienda" onsubmit="return validarFormulario();">
+            <input type="hidden" name="accion" value="registrarUsuario">
 
             <div class="form-section">
                 <h3>Datos de Contacto</h3>
@@ -225,7 +226,7 @@
 
             <div class="buttons-container">
                 <button type="submit" class="btn btn-primary">Registrar Usuario</button>
-                <a href="${pageContext.request.contextPath}/FormularioCompra" class="btn btn-secondary">Volver al login</a>
+                <a href="${pageContext.request.contextPath}/servlet/tienda?accion=verLogin" class="btn btn-secondary">Volver al login</a>
             </div>
 
         </form>

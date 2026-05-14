@@ -150,11 +150,6 @@
                 <th><img src="${pageContext.request.contextPath}/img/musica.png" width="50" height="50"></th>
             </tr>
         </table>
-
-        <a href="${pageContext.request.contextPath}/servlet/tienda?accion=verPerfil" class="btn-perfil">
-            <img src="${pageContext.request.contextPath}/img/fotoDePerfil.png" alt="Perfil">
-            Mi perfil
-        </a>
     </div>
 
     <hr>
@@ -162,14 +157,10 @@
     <div class="perfil-container">
         <div class="perfil-foto">
             <img src="${pageContext.request.contextPath}/img/fotoDePerfil.png" alt="Foto de perfil">
-            <span>${sessionScope.nombreUsuario}</span>
+            <span>${sessionScope.emailUsuario}</span>
         </div>
 
         <div class="perfil-datos">
-            <div class="dato-fila">
-                <span class="dato-label">Nombre</span>
-                <span class="dato-valor">${sessionScope.nombreUsuario}</span>
-            </div>
             <div class="dato-fila">
                 <span class="dato-label">Correo electrónico</span>
                 <span class="dato-valor">${sessionScope.emailUsuario}</span>

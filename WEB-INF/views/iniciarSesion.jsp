@@ -102,7 +102,7 @@
             <p>Por favor, inicie sesión para continuar con su compra.</p>
         </div>
 
-        <form method="post" action="${pageContext.request.contextPath}/FormularioRecibo" onsubmit="return validarLogin();">
+        <form method="post" action="../servlet/tienda" onsubmit="return validarLogin();">
             <input type="hidden" name="accion" value="login">
             <div class="form-group">
                 <label for="email" class="required">Correo Electrónico</label>
@@ -117,9 +117,14 @@
 
         <br>
 
-        <form method="post" action="${pageContext.request.contextPath}/FormularioRegistro">
-            <button type="submit" class="btn">Regístrese aquí</button>
+        <form method="post" action="../servlet/tienda">
+            <input type="hidden" name="accion" value="irARegistro">
+            <button type="submit" class="btn" style="background-color:#2196F3;">Regístrese aquí</button>
         </form>
+
+        <br>
+
+        <a href="${pageContext.request.contextPath}/index.html" class="btn" style="display:block;text-align:center;background-color:#888;color:white;text-decoration:none;box-sizing:border-box;">Volver a la tienda</a>
     </div>
 
     <hr>
