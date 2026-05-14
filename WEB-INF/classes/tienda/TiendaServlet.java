@@ -64,7 +64,7 @@ public class TiendaServlet extends HttpServlet {
             } else {
                 response.sendRedirect(request.getContextPath() + "/index.html");
             }
-        } else if (accion != null && accion.equals("registrarUsuario")) {       // Registrar nuevo usuario
+        } else if (accion != null && accion.equals("registrarUsuario")) {      // Registrar nuevo usuario
             String email = request.getParameter("email");
             String password = request.getParameter("password");
             String tipoTarjeta = request.getParameter("tipoTarjeta");
@@ -213,6 +213,9 @@ public class TiendaServlet extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/views/carrito.jsp").forward(request, response);
         } else if (accion != null && accion.equals("verLogin")) {           //Ir al login
             request.getRequestDispatcher("/WEB-INF/views/iniciarSesion.jsp").forward(request, response);
+        } else if (accion != null && accion.equals("irARegistro")) {        // Ir a la página de registro
+            request.getRequestDispatcher("/WEB-INF/views/registrarUsuario.jsp").forward(request, response);
+            return;
         } else if (accion != null && accion.equals("irARegistro")) {        // Ir a la página de registro
             request.getRequestDispatcher("/WEB-INF/views/registrarUsuario.jsp").forward(request, response);
             return;

@@ -38,7 +38,7 @@ public class Carrito {
     //SETTERS
     public void setUsuarioID(int usuarioID) {
         this.usuarioID = usuarioID;
-        PedidoDAO.actualizarUsuarioPedido(this.pedidoID, usuarioID);
+        // PedidoDAO.actualizarUsuarioPedido(this.pedidoID, usuarioID);
     }
     public void setPedidoID(int pedidoID) {
         this.pedidoID = pedidoID;
@@ -56,28 +56,28 @@ public class Carrito {
             System.out.println("\nCD encontrado: Modificando cantidad");
             detallePedido existingDp = detallesPedido.get(cd.getId());
             existingDp.setCantidad(existingDp.getCantidad() + cantidad);
-            PedidoDAO.actualizarCantidad(pedidoID, cd.getId(), existingDp.getCantidad());
+            // PedidoDAO.actualizarCantidad(pedidoID, cd.getId(), existingDp.getCantidad());
         } else {
             System.out.println("\nCD no encontrado: Añadiendo nuevo detalle");
             detallesPedido.put(cd.getId(), new detallePedido(cd, cantidad));
-            PedidoDAO.anhadirDetalleAPedido(this.pedidoID, detallesPedido.get(cd.getId()));
+            // PedidoDAO.anhadirDetalleAPedido(this.pedidoID, detallesPedido.get(cd.getId()));
         }
     }
 
     //Eliminar cd del carrito
     public void eliminar(CD cd) {
         detallesPedido.remove(cd.getId());
-        PedidoDAO.eliminarDetallePedido(this.pedidoID, cd.getId());
+        // PedidoDAO.eliminarDetallePedido(this.pedidoID, cd.getId());
     }
     
     //Vaciar el carrito
     public void vaciar() {
         detallesPedido.clear();
-        PedidoDAO.eliminarPedido(this.pedidoID);
+        // PedidoDAO.eliminarPedido(this.pedidoID);
     }
 
     public void terminarPedido() {
-        PedidoDAO.actualizarFechaPedido(this.pedidoID);
+        // PedidoDAO.actualizarFechaPedido(this.pedidoID);
     }
 
     //Calcular el total del carrito dado un mapa de precios
@@ -86,7 +86,7 @@ public class Carrito {
         for (detallePedido detalle : detallesPedido.values()) {
             total += detalle.getCD().getPrecio() * detalle.getCantidad();
         }
-        PedidoDAO.actualizarTotalPedido(this.pedidoID, total);
+        //PedidoDAO.actualizarTotalPedido(this.pedidoID, total);
         return total;
     }
 }
