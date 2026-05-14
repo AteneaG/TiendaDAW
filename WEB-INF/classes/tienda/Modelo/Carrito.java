@@ -6,13 +6,12 @@ import java.util.*;
 import tienda.BD.PedidoDAO;
 
 public class Carrito {
-    private final int pedidoID; 
+    private int pedidoID; 
     private int usuarioID;
     private HashMap<Integer, detallePedido> detallesPedido; 
 
     public Carrito(detallePedido dp) {
         this.usuarioID = -1;                                            // Usuario no registrado
-        this.pedidoID = PedidoDAO.registrarPedidoUnCD(dp);              // ID Pedido BD
         this.detallesPedido = new HashMap<Integer, detallePedido>();    //cdID, detallePedido
         this.detallesPedido.put(dp.getCD().getId(), dp);                //Añadir el CD al carrito
     }
@@ -40,6 +39,9 @@ public class Carrito {
     public void setUsuarioID(int usuarioID) {
         this.usuarioID = usuarioID;
         PedidoDAO.actualizarUsuarioPedido(this.pedidoID, usuarioID);
+    }
+    public void setPedidoID(int pedidoID) {
+        this.pedidoID = pedidoID;
     }
 
 
