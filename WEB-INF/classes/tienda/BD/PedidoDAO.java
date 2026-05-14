@@ -313,8 +313,6 @@ public class PedidoDAO {
 
                 Carrito carrito = null;
 
-                int contadorProductos = 0;
-
                 while (rs.next()) {
 
                     int usuarioId = rs.getInt("usuario_id");
@@ -335,8 +333,6 @@ public class PedidoDAO {
                     detallePedido detalle = new detallePedido(cd, cantidad);
 
                     carrito.getDetallesPedido().put(cd.getId(), detalle);
-
-                    contadorProductos++;
 
                 }
 

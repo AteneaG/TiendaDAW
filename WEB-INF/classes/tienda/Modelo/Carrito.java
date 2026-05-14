@@ -3,8 +3,6 @@ package tienda.Modelo;
 
 import java.util.*;
 
-import tienda.BD.PedidoDAO;
-
 public class Carrito {
     private int pedidoID; 
     private int usuarioID;
