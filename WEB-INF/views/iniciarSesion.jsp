@@ -88,9 +88,9 @@
     <div class='header'>
         <table align="center" border="0">
             <tr> 
-                <th><img src="${pageContext.request.contextPath}/Imagenes/musica.png" width="50" height="50"></th>
+                <th><img src="${pageContext.request.contextPath}/img/musica.png" width="50" height="50"></th>
                 <th><font face="Times New Roman,Times" size="+3">Música para DAA - Iniciar Sesión</font></th>
-                <th><img src="${pageContext.request.contextPath}/Imagenes/musica.png" width="50" height="50"></th>
+                <th><img src="${pageContext.request.contextPath}/img/musica.png" width="50" height="50"></th>
             </tr>  
         </table>
     </div>

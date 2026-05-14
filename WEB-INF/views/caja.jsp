@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <!DOCTYPE html>
@@ -127,7 +128,7 @@
 
         <table class="tabla">
             <tr><th>TOTAL A PAGAR</th></tr>
-            <tr><td><strong>${sessionScope.carrito.calcularTotal()}€</strong></td></tr>
+            <tr><td><strong><fmt:formatNumber value="${sessionScope.carrito.calcularTotal()}" minFractionDigits="2" maxFractionDigits="2"/>€</strong></td></tr>
         </table>
 
         <div class="buttons-container">

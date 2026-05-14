@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
@@ -137,15 +138,15 @@
                     <td>${entry.value.CD.titulo}</td>
                     <td>${entry.value.CD.artista}</td>
                     <td>${entry.value.CD.pais}</td>
-                    <td>${entry.value.CD.precio}€</td>
+                    <td><fmt:formatNumber value="${entry.value.CD.precio}" minFractionDigits="2" maxFractionDigits="2"/>€</td>
                     <td>${entry.value.cantidad}</td>
-                    <td>${entry.value.CD.precio * entry.value.cantidad}€</td>
+                    <td><fmt:formatNumber value="${entry.value.CD.precio * entry.value.cantidad}" minFractionDigits="2" maxFractionDigits="2"/>€</td>
                     <td><input type="checkbox" name="cdEliminar" value="${entry.key}"></td>
                 </tr>
             </c:forEach>
             <tr class="total-row">
                 <td colspan="5" style="text-align: right;">IMPORTE TOTAL:</td>
-                <td>${sessionScope.carrito.calcularTotal()}€</td>
+                <td><fmt:formatNumber value="${sessionScope.carrito.calcularTotal()}" minFractionDigits="2" maxFractionDigits="2"/>€</td>
                 <td>
                     <c:if test="${not empty sessionScope.carrito.detallesPedido}">
                         <input type="submit" value="Eliminar" class="btn btn-danger">
@@ -160,12 +161,14 @@
     </form>
     
     <!--TODO: CAMBIAR A GET -->
-    <div class="buttons-container">
-        <form method="post" action="../servlet/tienda">
-            <input type="hidden" name="accion" value="pagar">
-            <input type="submit" value="Confirmar Compra" class="btn btn-primary">
-        </form>
-    </div>
+    <c:if test="${not empty sessionScope.carrito.detallesPedido}">
+        <div class="buttons-container">
+            <form method="post" action="../servlet/tienda">
+                <input type="hidden" name="accion" value="pagar">
+                <input type="submit" value="Confirmar Compra" class="btn btn-primary">
+            </form>
+        </div>
+    </c:if>
 
     <hr>
 </body>
