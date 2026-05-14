@@ -28,10 +28,12 @@ public class TiendaServlet extends HttpServlet {
                 for (String id : cdsEliminar) {
                     CD cd = CDDAO.obtenerCDPorId(Integer.parseInt(id));
                     carrito.eliminar(cd);
+                    PedidoDAO.eliminarDetallePedido(carrito.getPedidoID(), cd.getId());
                 }
             }
             if (carrito.getDetallesPedido().isEmpty()) {
                 carrito.vaciar();
+                PedidoDAO.eliminarPedido(carrito.getPedidoID());
                 session.setAttribute("carrito", null);
             }
             request.getRequestDispatcher("/WEB-INF/views/carrito.jsp").forward(request, response);
@@ -48,7 +50,10 @@ public class TiendaServlet extends HttpServlet {
 
             session.setAttribute("logged", true);
             session.setAttribute("email", email);
-            if(carrito != null) carrito.setUsuarioID(UsuarioDAO.obtenerIdUsuario(email));           
+            if(carrito != null){
+                carrito.setUsuarioID(UsuarioDAO.obtenerIdUsuario(email));      
+                PedidoDAO.actualizarUsuarioPedido(carrito.getPedidoID(), carrito.getUsuarioID());   
+            }   
 
             String redirect = (String) session.getAttribute("redirectAfterLogin");
             session.removeAttribute("redirectAfterLogin");           
@@ -59,7 +64,8 @@ public class TiendaServlet extends HttpServlet {
             } else {
                 response.sendRedirect(request.getContextPath() + "/index.html");
             }
-        } else if (accion != null && accion.equals("registrarUsuario")) {       // Registrar nuevo usuario
+        } else if (accion != null && accion.equals("registrarUsuario")) {      // Registrar nuevo usuario
+
             String email = request.getParameter("email");
             String password = request.getParameter("password");
             String tipoTarjeta = request.getParameter("tipoTarjeta");
@@ -73,7 +79,11 @@ public class TiendaServlet extends HttpServlet {
             UsuarioDAO.registrarUsuario(email, password, tipoTarjeta, Long.parseLong(numeroTarjeta));
             session.setAttribute("logged", true);
             session.setAttribute("email", email);
-            if(carrito != null) carrito.setUsuarioID(UsuarioDAO.obtenerIdUsuario(email));
+            if(carrito != null) {
+                carrito.setUsuarioID(UsuarioDAO.obtenerIdUsuario(email));
+                PedidoDAO.actualizarUsuarioPedido(carrito.getPedidoID(), carrito.getUsuarioID());
+            }
+
 
             String redirect = (String) session.getAttribute("redirectAfterLogin");
             if (redirect != null) {
@@ -99,13 +109,29 @@ public class TiendaServlet extends HttpServlet {
             if (cd != null && dp != null) {
                 //Cuando añade un carrito si este no existe, lo crea con el CD que va a crear
                 if (session.getAttribute("carrito") == null) {
-                    session.setAttribute("carrito", new Carrito(dp));     
+                    int pedidoID = PedidoDAO.registrarPedidoUnCD(dp);              // ID Pedido BD
+                    session.setAttribute("carrito", new Carrito(dp));   
+                    carrito = (Carrito) session.getAttribute("carrito");
+                    carrito.setPedidoID(pedidoID);
                 }
-                else carrito.agregarDetalle(dp);
+                else {
+                    carrito.agregarDetalle(dp);
+                    if (carrito.getDetallesPedido().containsKey(cd.getId())) {
+                        detallePedido existingDp = carrito.getDetallesPedido().get(cd.getId());
+                        existingDp.setCantidad(existingDp.getCantidad() + cantidad);
+                        PedidoDAO.actualizarCantidad(carrito.getPedidoID(), cd.getId(), existingDp.getCantidad());
+                    } else {
+                        PedidoDAO.anhadirDetalleAPedido(carrito.getPedidoID(), carrito.getDetallesPedido().get(cd.getId()));
+                    }
+
+                }
 
                 System.out.println("\nLogged? "+logged+" - Email en sesión: "+mail);
                 carrito = (Carrito) session.getAttribute("carrito");
-                if(logged) carrito.setUsuarioID(UsuarioDAO.obtenerIdUsuario(mail));
+                if(logged) {
+                    carrito.setUsuarioID(UsuarioDAO.obtenerIdUsuario(mail));
+                    PedidoDAO.actualizarUsuarioPedido(carrito.getPedidoID(), carrito.getUsuarioID());
+                }
             } else {
                 System.err.println("\nCD no encontrado por  Artista ("+artista+") y Titulo ("+titulo+")");
                 
@@ -122,6 +148,7 @@ public class TiendaServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
         HttpSession session = request.getSession(true);
+        Carrito carrito = (Carrito) session.getAttribute("carrito");
         boolean logged = session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged");
         String accion = request.getParameter("accion");
 
@@ -132,8 +159,12 @@ public class TiendaServlet extends HttpServlet {
                 return;
             }
         
-            double total = carrito.calcularTotal();
-            carrito.terminarPedido();
+            double total = 0.0;
+            for (detallePedido detalle : carrito.getDetallesPedido().values()) {
+                total += detalle.getCD().getPrecio() * detalle.getCantidad();
+            }
+            PedidoDAO.actualizarTotalPedido(carrito.getPedidoID(), total);
+            PedidoDAO.actualizarFechaPedido(carrito.getPedidoID());
         
             double iva = total * 0.21;
             double subtotal = total - iva;
@@ -184,6 +215,9 @@ public class TiendaServlet extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/views/carrito.jsp").forward(request, response);
         } else if (accion != null && accion.equals("verLogin")) {           //Ir al login
             request.getRequestDispatcher("/WEB-INF/views/iniciarSesion.jsp").forward(request, response);
+        } else if (accion != null && accion.equals("irARegistro")) {        // Ir a la página de registro
+            request.getRequestDispatcher("/WEB-INF/views/registrarUsuario.jsp").forward(request, response);
+            return;
         } else if (accion != null && accion.equals("irARegistro")) {        // Ir a la página de registro
             request.getRequestDispatcher("/WEB-INF/views/registrarUsuario.jsp").forward(request, response);
             return;
