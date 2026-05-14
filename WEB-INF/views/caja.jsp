@@ -88,6 +88,7 @@
             text-decoration: none;
             font-size: 14px;
             font-family: inherit;
+            display: inline-block;
         }
         .btn-primary {
             background-color: #4CAF50;
@@ -96,6 +97,9 @@
         .btn-secondary {
             background-color: #2196F3;
             color: white;
+        }
+        .btn:hover {
+            opacity: 0.9;
         }
         hr { 
             border: 0; 
@@ -124,6 +128,7 @@
     </div>
 
     <hr>
+
     <div class="page-container">
 
         <table class="tabla">
@@ -132,13 +137,13 @@
         </table>
 
         <div class="buttons-container">
-            <form method="post" action="../servlet/tienda">
-                <input type="hidden" name="accion" value="irAPago">
-                <input type="submit" value="Proceder al Pago" class="btn btn-primary">
-            </form>
+            <a href="${pageContext.request.contextPath}/servlet/tienda?accion=irAPago"
+               class="btn btn-primary">
+                Proceder al Pago
+            </a>
 
             <a href="${pageContext.request.contextPath}/servlet/tienda?accion=verCarrito"
-            class="btn btn-secondary">
+               class="btn btn-secondary">
                 Volver al Carrito
             </a>
         </div>
