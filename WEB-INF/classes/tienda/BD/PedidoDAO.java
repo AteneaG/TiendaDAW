@@ -289,21 +289,20 @@ public class PedidoDAO {
     }
 
     public static boolean actualizarFechaPedido(int pedidoId) {
-        String sql = "UPDATE pedidos SET fecha_pedido = ? WHERE id = ?";
-        
-        System.out.println("\nPedidoDAO: Probando conexion: ");
-        
+        System.out.println("\nPedidoDAO: Actualizando fecha pedido ID: " + pedidoId);
+
+        String sql = "UPDATE pedidos SET fecha_pedido = CURRENT_TIMESTAMP WHERE id = ?";
+
         try (Connection conn = BaseDeDatos.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
-            stmt.setInt(1, (int) (System.currentTimeMillis() / 1000)); // Establecer la fecha actual en formato timestamp
-            stmt.setInt(2, pedidoId);
+                
+            stmt.setInt(1, pedidoId);
             int filasAfectadas = stmt.executeUpdate();
+            if (filasAfectadas > 0) System.out.println("Fecha actualizada para pedido ID: " + pedidoId);
+            else System.err.println("No se encontró pedido con ID: " + pedidoId);
 
+            return filasAfectadas > 0;
 
-
-            return filasAfectadas > 0; // Retorna true si se actualizó al menos un registro
-            
         } catch (SQLException e) {
             System.err.println("Error al actualizar fecha del pedido: " + e.getMessage());
             return false;
