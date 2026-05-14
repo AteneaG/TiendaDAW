@@ -167,7 +167,6 @@ public class PedidoDAO {
         }
     }
 
-
     //Actualizar datos PEDIDOS
     public static boolean anhadirDetalleAPedido(int pedidoId, detallePedido dp) {
         Connection conn = null;
