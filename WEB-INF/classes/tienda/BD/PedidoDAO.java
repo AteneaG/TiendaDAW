@@ -413,14 +413,6 @@ public class PedidoDAO {
                     double precio = rs.getDouble("precio");
                     int cantidad = rs.getInt("cantidad");
 
-                    System.out.println("[INFO] Datos del CD:");
-                    System.out.println("CD ID: " + cdId);
-                    System.out.println("Título: " + titulo);
-                    System.out.println("Artista: " + artista);
-                    System.out.println("País: " + pais);
-                    System.out.println("Precio: " + precio);
-                    System.out.println("Cantidad: " + cantidad);
-
                     CD cd = new CD(cdId, titulo, artista, pais, precio);
 
                     detallePedido detalle = new detallePedido(cd, cantidad);
@@ -429,11 +421,7 @@ public class PedidoDAO {
 
                     contadorProductos++;
 
-                    System.out.println("[OK] CD añadido correctamente al carrito.");
                 }
-
-                System.out.println("========================================");
-
                 if (carrito == null) {
 
                     System.out.println("[WARN] No se encontraron productos para el pedido ID: " + pedidoId);
