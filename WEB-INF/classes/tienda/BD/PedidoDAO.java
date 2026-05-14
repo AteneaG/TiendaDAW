@@ -371,24 +371,34 @@ public class PedidoDAO {
 
     //OBTENER DATOS PEDIDOS
     public static Carrito obtenerDatosPedido(int pedidoId) {
-        String sql = "SELECT * FROM pedidos WHERE id = ?";
-        
-        System.out.println("\nPedidoDAO: Probando conexion: ");
-        
+        String sql =
+            "SELECT p.usuario_id, dp.cantidad, " +
+            "       c.id AS cd_id, c.titulo, c.artista, c.pais, c.precio " +
+            "FROM pedidos p " +
+            "JOIN detalle_pedidos dp ON dp.pedido_id = p.id " +
+            "JOIN \"CD\" c ON c.id = dp.producto_id " +
+            "WHERE p.id = ?";
+
         try (Connection conn = BaseDeDatos.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
-            Carrito carrito = new Carrito(pedidoId, rs.getInt("usuario_id"));
-            // por cada fila del ResultSet:
-            carrito.getDetallesPedido().put(cd.getId(), new detallePedido(cd, cantidad));
 
             stmt.setInt(1, pedidoId);
-            int filasAfectadas = stmt.executeUpdate();
-            return filasAfectadas > 0; // Retorna true si se eliminó al menos un registro
-            
+            try (ResultSet rs = stmt.executeQuery()) {
+                Carrito carrito = null;
+                while (rs.next()) {
+                    if (carrito == null) {
+                        carrito = new Carrito(pedidoId, rs.getInt("usuario_id"));
+                    }
+                    CD cd = new CD(rs.getInt("cd_id"), rs.getString("titulo"),
+                                   rs.getString("artista"), rs.getString("pais"),
+                                   rs.getDouble("precio"));
+                    carrito.getDetallesPedido().put(cd.getId(), new detallePedido(cd, rs.getInt("cantidad")));
+                }
+                return carrito;
+            }
         } catch (SQLException e) {
-            System.err.println("Error al eliminar pedido: " + e.getMessage());
-            return false;
+            System.err.println("Error al obtener datos del pedido: " + e.getMessage());
+            return null;
         }
     }
 

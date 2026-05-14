@@ -30,38 +30,34 @@ public class TiendaServlet extends HttpServlet {
             }
             request.getRequestDispatcher("/WEB-INF/views/caja.jsp").forward(request, response);        
         } else if (accion != null && accion.equals("confirmarPago")) {        // (F5) //Confirmar pago, vaciar carrito y volver al inicio (F5)
-            if(!logged) {
+            if (!logged) {
                 request.setAttribute("error", "Debe iniciar sesión para proceder al pago.");
                 session.setAttribute("redirectAfterLogin", "confirmacion");
                 request.getRequestDispatcher("/WEB-INF/views/iniciarSesion.jsp").forward(request, response);
                 return;
             }
-            String email = request.getParameter("email");
-            String nombre = request.getParameter("nombre");
-            String tipoTarjeta = request.getParameter("tipoTarjeta");
-            String numeroTarjeta = request.getParameter("numeroTarjeta");
-
+        
             double total = carrito.calcularTotal();
+            carrito.terminarPedido();
+        
             double iva = total * 0.21;
             double subtotal = total - iva;
-            session.setAttribute("totalFinal", total);
-            session.setAttribute("subtotalFinal", String.format("%.2f", subtotal));
-            session.setAttribute("ivaFinal", String.format("%.2f", iva));
-            session.setAttribute("nombreUsuario", nombre);
+        
+            cargarDatosPerfil(session);
 
-            // Guardar datos para el recibo
-            session.setAttribute("emailRecibo", email);
-            session.setAttribute("tipoTarjetaRecibo", tipoTarjeta);
-            session.setAttribute("numeroTarjetaRecibo", numeroTarjeta);
-            session.setAttribute("detallesRecibo", new java.util.ArrayList<>(carrito.getDetallesPedido().values()));
-            session.setAttribute("numeroFactura", (int)(Math.random() * 900000) + 100000); // 6 dígitos aleatorios
-
-            //Obtener el id del usuario a partir del email
-            int usuarioId = UsuarioDAO.obtenerIdUsuario(email);
-
-            //Registrar el pedido en la BD
-            carrito.terminarPedido();
-
+            Carrito carritoRecibo = PedidoDAO.obtenerDatosPedido(carrito.getPedidoID());
+        
+            request.setAttribute("carritoRecibo", carritoRecibo);
+            request.setAttribute("totalFinal", String.format("%.2f", total));
+            request.setAttribute("subtotalFinal", String.format("%.2f", subtotal));
+            request.setAttribute("ivaFinal", String.format("%.2f", iva));
+            request.setAttribute("emailRecibo", session.getAttribute("emailUsuario"));
+            request.setAttribute("tipoTarjeta", session.getAttribute("tipoTarjeta"));
+            request.setAttribute("numTarjeta", session.getAttribute("ultimosTarjeta"));
+            request.setAttribute("numeroFactura", (int)(Math.random() * 900000) + 100000);
+        
+            session.setAttribute("carrito", null);
+        
             request.getRequestDispatcher("/WEB-INF/views/recibo.jsp").forward(request, response);
             return;
         } else if (accion != null && accion.equals("eliminar")) {             // (F4) Eliminar CD del carrito (F4)
