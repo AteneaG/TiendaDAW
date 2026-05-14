@@ -422,18 +422,6 @@ public class PedidoDAO {
                     contadorProductos++;
 
                 }
-                if (carrito == null) {
-
-                    System.out.println("[WARN] No se encontraron productos para el pedido ID: " + pedidoId);
-
-                } else {
-
-                    System.out.println("[OK] Pedido cargado correctamente.");
-                    System.out.println("[INFO] Número total de productos cargados: " + contadorProductos);
-                }
-
-                System.out.println("FIN obtenerDatosPedido()");
-                System.out.println("========================================\n");
 
                 return carrito;
             }
@@ -441,9 +429,6 @@ public class PedidoDAO {
         } catch (SQLException e) {
 
             System.err.println("\n[ERROR] Error SQL al obtener datos del pedido.");
-            System.err.println("[ERROR] Pedido ID: " + pedidoId);
-            System.err.println("[ERROR] Mensaje: " + e.getMessage());
-
             e.printStackTrace();
 
             return null;
