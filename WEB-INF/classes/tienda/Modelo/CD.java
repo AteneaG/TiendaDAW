@@ -30,9 +30,5 @@ public class CD {
     public void setPais(String pais) { this.pais = pais; }
     public void setPrecio(double precio) { this.precio = precio; }
 
-    //TODO REVISAR SI MANTENER
-    @Override
-    public String toString() {
-        return titulo + " | " + artista + " | " + pais + " | $" + String.format("%.2f", precio);
-    }
+
 }
