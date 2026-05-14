@@ -117,10 +117,10 @@
 
         <br>
 
-        <form method="post" action="../servlet/tienda">
-            <input type="hidden" name="accion" value="irARegistro">
-            <button type="submit" class="btn" style="background-color:#2196F3;">Regístrese aquí</button>
-        </form>
+        <a href="${pageContext.request.contextPath}/servlet/tienda?accion=irARegistro" 
+           class="btn" style="display:block;text-align:center;background-color:#2196F3;...">
+           Regístrese aquí
+        </a>
 
         <br>
 

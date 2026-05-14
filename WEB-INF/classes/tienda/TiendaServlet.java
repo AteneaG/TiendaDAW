@@ -97,14 +97,14 @@ public class TiendaServlet extends HttpServlet {
             String cdStr = request.getParameter("cd");
             String cantidadStr = request.getParameter("cantidad");
             int cantidad = Integer.parseInt(cantidadStr.trim());
-                
+
             StringTokenizer t = new StringTokenizer(cdStr, "|");
             String titulo = t.nextToken().trim();
             String artista = t.nextToken().trim();
-                
+
             CD cd = CDDAO.obtenerCDPorArtistaYTitulo(artista, titulo);
             detallePedido dp = new detallePedido(cd, cantidad);
-                
+
             if (cd != null) {
                 if (session.getAttribute("carrito") == null) {
                     // Primer CD: crear pedido en BD y carrito en sesión
@@ -212,9 +212,6 @@ public class TiendaServlet extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/views/carrito.jsp").forward(request, response);
         } else if (accion != null && accion.equals("verLogin")) {           //Ir al login
             request.getRequestDispatcher("/WEB-INF/views/iniciarSesion.jsp").forward(request, response);
-        } else if (accion != null && accion.equals("irARegistro")) {        // Ir a la página de registro
-            request.getRequestDispatcher("/WEB-INF/views/registrarUsuario.jsp").forward(request, response);
-            return;
         } else if (accion != null && accion.equals("irARegistro")) {        // Ir a la página de registro
             request.getRequestDispatcher("/WEB-INF/views/registrarUsuario.jsp").forward(request, response);
             return;
