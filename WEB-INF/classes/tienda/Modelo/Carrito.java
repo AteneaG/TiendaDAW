@@ -35,7 +35,7 @@ public class Carrito {
     //SETTERS
     public void setUsuarioID(int usuarioID) {
         this.usuarioID = usuarioID;
-
+        PedidoDAO.actualizarUsuarioPedido(this.pedidoID, usuarioID);
     }
 
 

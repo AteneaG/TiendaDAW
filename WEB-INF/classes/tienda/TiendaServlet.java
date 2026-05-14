@@ -17,8 +17,8 @@ public class TiendaServlet extends HttpServlet {
         //Crear la sesión
         HttpSession session = request.getSession(true); //Si no existe, la crea
         boolean logged = session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged");
+        String mail = (String) session.getAttribute("email");
         Carrito carrito = (Carrito) session.getAttribute("carrito");
-
         String accion = request.getParameter("accion");
 
         if (accion != null && accion.equals("pagar")) {
@@ -99,12 +99,14 @@ public class TiendaServlet extends HttpServlet {
             }
 
             session.setAttribute("logged", true);
-            session.setAttribute("email", email);           
+            session.setAttribute("email", email);
+            if(carrito != null) carrito.setUsuarioID(UsuarioDAO.obtenerIdUsuario(email));           
 
             String redirect = (String) session.getAttribute("redirectAfterLogin");
             session.removeAttribute("redirectAfterLogin");           
 
             if (redirect != null) {
+                if (redirect.equals("perfil")) cargarDatosPerfil(session);
                 request.getRequestDispatcher("/WEB-INF/views/" + redirect + ".jsp").forward(request, response);
             } else {
                 response.sendRedirect(request.getContextPath() + "/index.html");
@@ -127,6 +129,7 @@ public class TiendaServlet extends HttpServlet {
             UsuarioDAO.registrarUsuario(email, password, tipoTarjeta, Long.parseLong(numeroTarjeta));
             session.setAttribute("logged", true);
             session.setAttribute("email", email);
+            if(carrito != null) carrito.setUsuarioID(UsuarioDAO.obtenerIdUsuario(email));
             response.sendRedirect(request.getContextPath() + "/index.html");
 
         } else {                                                                       // (F2) Añadir CD al carrito (F2)
@@ -145,9 +148,13 @@ public class TiendaServlet extends HttpServlet {
             if (cd != null && dp != null) {
                 //Cuando añade un carrito si este no existe, lo crea con el CD que va a crear
                 if (session.getAttribute("carrito") == null) {
-                    session.setAttribute("carrito", new Carrito(dp));
+                    session.setAttribute("carrito", new Carrito(dp));     
                 }
                 else carrito.agregarDetalle(dp);
+
+                System.out.println("\nLogged? "+logged+" - Email en sesión: "+mail);
+                carrito = (Carrito) session.getAttribute("carrito");
+                if(logged) carrito.setUsuarioID(UsuarioDAO.obtenerIdUsuario(mail));
             } else {
                 System.err.println("\nCD no encontrado por  Artista ("+artista+") y Titulo ("+titulo+")");
                 
@@ -165,14 +172,13 @@ public class TiendaServlet extends HttpServlet {
         
         HttpSession session = request.getSession(true);
         boolean logged = session.getAttribute("logged") != null && (Boolean) session.getAttribute("logged");
-        
         String accion = request.getParameter("accion");
 
-        if (accion != null && accion.equals("cerrarSesion")) {             //Cerrar sesión
+        if (accion != null && accion.equals("cerrarSesion")) {              //Cerrar sesión
             session.invalidate();
             response.sendRedirect(request.getContextPath() + "/index.html");
             return;
-        } else if (accion != null && accion.equals("verCaja")) {                   //Volver a caja
+        } else if (accion != null && accion.equals("verCaja")) {            //Volver a caja
             if(!logged) {
                 request.setAttribute("error", "Debe iniciar sesión para proceder al pago.");
                 session.setAttribute("redirectAfterLogin", "caja");
@@ -184,17 +190,32 @@ public class TiendaServlet extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/views/carrito.jsp").forward(request, response);
         } else if (accion != null && accion.equals("verLogin")) {           //Ir al login
             request.getRequestDispatcher("/WEB-INF/views/iniciarSesion.jsp").forward(request, response);
-        } else if ("verPerfil".equals(accion)) {                                      //Ir al perfil
+        } else if (accion != null && accion.equals("verPerfil")) {          //Ir al perfil
              if(!logged) {
                 request.setAttribute("error", "Debe iniciar sesión para entrar a su perfil.");
                 session.setAttribute("redirectAfterLogin", "perfil");
                 request.getRequestDispatcher("/WEB-INF/views/iniciarSesion.jsp").forward(request, response);
                 return;
             }
+            cargarDatosPerfil(session);
             request.getRequestDispatcher("/WEB-INF/views/perfil.jsp").forward(request, response);
-        }
-        else {                                                                        //Por defecto volver al index
+        } else {                                                                       //Por defecto volver al index
             response.sendRedirect(request.getContextPath() + "/index.html");
+        }
+    }
+
+
+    //FUNCION PARA CAGAR BIEN LOS DATOS DEL PERFIL, sino se usa la primra vez no cargan los datos
+    private void cargarDatosPerfil(HttpSession session) {
+        String emailSesion = (String) session.getAttribute("email");
+        java.util.Map<String, String> datos = UsuarioDAO.obtenerDatosUsuario(emailSesion);
+        if (datos != null) {
+            session.setAttribute("nombreUsuario", datos.get("nombreUsuario"));
+            session.setAttribute("emailUsuario",  datos.get("emailUsuario"));
+            session.setAttribute("tipoTarjeta",   datos.get("tipoTarjeta"));
+            String num = datos.get("numTarjeta");
+            session.setAttribute("ultimosTarjeta",
+                num != null && num.length() >= 4 ? num.substring(num.length() - 4) : "****");
         }
     }
 }
