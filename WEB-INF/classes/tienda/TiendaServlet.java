@@ -29,7 +29,7 @@ public class TiendaServlet extends HttpServlet {
                 return;
             }
             request.getRequestDispatcher("/WEB-INF/views/caja.jsp").forward(request, response);        
-        } else if (accion != null && accion.equals("confirmarPago")) {        // (F5) //Confirmar pago, vaciar carrito y volver al inicio (F5)
+        } else if (accion != null && accion.equals("irAPago")) {        // (F5) //Confirmar pago, vaciar carrito y volver al inicio (F5)
             if (!logged) {
                 request.setAttribute("error", "Debe iniciar sesión para proceder al pago.");
                 session.setAttribute("redirectAfterLogin", "confirmacion");
@@ -46,6 +46,13 @@ public class TiendaServlet extends HttpServlet {
             cargarDatosPerfil(session);
 
             Carrito carritoRecibo = PedidoDAO.obtenerDatosPedido(carrito.getPedidoID());
+            System.out.println("\nCarrito para recibo: "+carritoRecibo);
+            System.out.println("Total para recibo: "+total);
+            System.out.println("Subtotal para recibo: "+subtotal);
+            System.out.println("IVA para recibo: "+iva);
+            System.out.println("Email para recibo: "+session.getAttribute("emailUsuario"));
+            System.out.println("Tipo tarjeta para recibo: "+session.getAttribute("tipoTarjeta"));
+            System.out.println("Num tarjeta para recibo: "+session.getAttribute("ultimosTarjeta")); 
         
             request.setAttribute("carritoRecibo", carritoRecibo);
             request.setAttribute("totalFinal", String.format("%.2f", total));
@@ -73,15 +80,6 @@ public class TiendaServlet extends HttpServlet {
                 session.setAttribute("carrito", null);
             }
             request.getRequestDispatcher("/WEB-INF/views/carrito.jsp").forward(request, response);
-            return;
-        } else if (accion != null && accion.equals("irAPago")) {              // (F3) Ir al pago desde la confirmacion (F3)
-            if(!logged) {
-                request.setAttribute("error", "Debe iniciar sesión para proceder al pago.");
-                session.setAttribute("redirectAfterLogin", "pago");
-                request.getRequestDispatcher("/WEB-INF/views/iniciarSesion.jsp").forward(request, response);
-                return;
-            }
-            request.getRequestDispatcher("/WEB-INF/views/recibo.jsp").forward(request, response);
             return;
         } else if (accion != null && accion.equals("login")) {                // (F6) Ir a registro desde el login (F6)
             

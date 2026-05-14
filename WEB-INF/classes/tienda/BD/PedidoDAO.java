@@ -369,8 +369,15 @@ public class PedidoDAO {
         }
     }
 
-    //OBTENER DATOS PEDIDOS
+
+    // OBTENER DATOS PEDIDOS
     public static Carrito obtenerDatosPedido(int pedidoId) {
+    
+        System.out.println("\n========================================");
+        System.out.println("INICIO obtenerDatosPedido()");
+        System.out.println("Pedido ID solicitado: " + pedidoId);
+        System.out.println("========================================");
+    
         String sql =
             "SELECT p.usuario_id, dp.cantidad, " +
             "       c.id AS cd_id, c.titulo, c.artista, c.pais, c.precio " +
@@ -378,26 +385,104 @@ public class PedidoDAO {
             "JOIN detalle_pedidos dp ON dp.pedido_id = p.id " +
             "JOIN \"CD\" c ON c.id = dp.producto_id " +
             "WHERE p.id = ?";
-
+    
+        System.out.println("[DEBUG] SQL preparada:");
+        System.out.println(sql);
+    
         try (Connection conn = BaseDeDatos.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-
+            
+            System.out.println("[INFO] Intentando conexión con la base de datos...");
+            
+            if (conn != null) {
+                System.out.println("[OK] Conexión establecida correctamente.");
+            }
+        
             stmt.setInt(1, pedidoId);
+        
+            System.out.println("[INFO] Parámetro asignado:");
+            System.out.println("pedidoId = " + pedidoId);
+        
+            System.out.println("[INFO] Ejecutando consulta SQL...");
+        
             try (ResultSet rs = stmt.executeQuery()) {
+            
+                System.out.println("[OK] Consulta ejecutada correctamente.");
+            
                 Carrito carrito = null;
+            
+                int contadorProductos = 0;
+            
                 while (rs.next()) {
+                
+                    System.out.println("----------------------------------------");
+                    System.out.println("[INFO] Fila obtenida del ResultSet");
+                
+                    int usuarioId = rs.getInt("usuario_id");
+                
                     if (carrito == null) {
-                        carrito = new Carrito(pedidoId, rs.getInt("usuario_id"));
+                    
+                        System.out.println("[INFO] Creando objeto Carrito...");
+                    
+                        carrito = new Carrito(pedidoId, usuarioId);
+                    
+                        System.out.println("[OK] Carrito creado correctamente.");
+                        System.out.println("Pedido ID: " + pedidoId);
+                        System.out.println("Usuario ID: " + usuarioId);
                     }
-                    CD cd = new CD(rs.getInt("cd_id"), rs.getString("titulo"),
-                                   rs.getString("artista"), rs.getString("pais"),
-                                   rs.getDouble("precio"));
-                    carrito.getDetallesPedido().put(cd.getId(), new detallePedido(cd, rs.getInt("cantidad")));
+                
+                    int cdId = rs.getInt("cd_id");
+                    String titulo = rs.getString("titulo");
+                    String artista = rs.getString("artista");
+                    String pais = rs.getString("pais");
+                    double precio = rs.getDouble("precio");
+                    int cantidad = rs.getInt("cantidad");
+                
+                    System.out.println("[INFO] Datos del CD:");
+                    System.out.println("CD ID: " + cdId);
+                    System.out.println("Título: " + titulo);
+                    System.out.println("Artista: " + artista);
+                    System.out.println("País: " + pais);
+                    System.out.println("Precio: " + precio);
+                    System.out.println("Cantidad: " + cantidad);
+                
+                    CD cd = new CD(cdId, titulo, artista, pais, precio);
+                
+                    detallePedido detalle = new detallePedido(cd, cantidad);
+                
+                    carrito.getDetallesPedido().put(cd.getId(), detalle);
+                
+                    contadorProductos++;
+                
+                    System.out.println("[OK] CD añadido correctamente al carrito.");
                 }
+            
+                System.out.println("========================================");
+            
+                if (carrito == null) {
+                
+                    System.out.println("[WARN] No se encontraron productos para el pedido ID: " + pedidoId);
+                
+                } else {
+                
+                    System.out.println("[OK] Pedido cargado correctamente.");
+                    System.out.println("[INFO] Número total de productos cargados: " + contadorProductos);
+                }
+            
+                System.out.println("FIN obtenerDatosPedido()");
+                System.out.println("========================================\n");
+            
                 return carrito;
             }
+        
         } catch (SQLException e) {
-            System.err.println("Error al obtener datos del pedido: " + e.getMessage());
+        
+            System.err.println("\n[ERROR] Error SQL al obtener datos del pedido.");
+            System.err.println("[ERROR] Pedido ID: " + pedidoId);
+            System.err.println("[ERROR] Mensaje: " + e.getMessage());
+        
+            e.printStackTrace();
+        
             return null;
         }
     }
