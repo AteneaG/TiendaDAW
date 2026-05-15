@@ -216,7 +216,7 @@
                 <div class="form-group">
                     <label for="fechaExpiracion">Fecha de Expiración</label>
                     <input type="month" id="fechaExpiracion" name="fechaExpiracion"
-                           min="<%= java.time.LocalDate.now().getYear() %>-<%= String.format("%02d", java.time.LocalDate.now().getMonthValue()) %>">
+                           min="${fechaMinima}">
                 </div>
                 <div class="form-group">
                     <label for="codigoSeguridad">Código de Seguridad (CVV)</label>
