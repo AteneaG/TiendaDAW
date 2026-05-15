@@ -118,7 +118,7 @@
         <br>
 
         <a href="${pageContext.request.contextPath}/servlet/tienda?accion=irARegistro" 
-           class="btn" style="display:block;text-align:center;background-color:#2196F3;...">
+           class="btn" style="display:block;text-align:center;background-color:#2196F3;color:white;text-decoration:none;box-sizing:border-box;">
            Regístrese aquí
         </a>
 
