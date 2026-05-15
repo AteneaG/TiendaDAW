@@ -72,6 +72,7 @@ public class TiendaServlet extends HttpServlet {
             String numeroTarjeta = request.getParameter("numeroTarjeta");
 
             if (UsuarioDAO.obtenerIdUsuario(email) != -1) {
+                request.setAttribute("fechaMinima", java.time.YearMonth.now().toString());
                 request.getRequestDispatcher("/WEB-INF/views/registrarUsuario.jsp").forward(request, response);
                 return;
             }
@@ -213,6 +214,7 @@ public class TiendaServlet extends HttpServlet {
         } else if (accion != null && accion.equals("verLogin")) {           //Ir al login
             request.getRequestDispatcher("/WEB-INF/views/iniciarSesion.jsp").forward(request, response);
         } else if (accion != null && accion.equals("irARegistro")) {        // Ir a la página de registro
+            request.setAttribute("fechaMinima", java.time.YearMonth.now().toString());
             request.getRequestDispatcher("/WEB-INF/views/registrarUsuario.jsp").forward(request, response);
             return;
         } else if (accion != null && accion.equals("verPerfil")) {          //Ir al perfil
