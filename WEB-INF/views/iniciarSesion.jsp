@@ -8,13 +8,20 @@
     <style>
         body {
             background-color: #FDF5E6;
-            font-family: 'Times New Roman', Times, serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
         }
         .header {
             text-align: center;
             margin-bottom: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin: 0;
+            line-height: 50px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 0 10px;
         }
         .formulario-container {
             max-width: 400px;
@@ -37,7 +44,7 @@
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            font-family: 'Times New Roman', Times, serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: 16px;
             box-sizing: border-box;
         }
@@ -49,9 +56,29 @@
             font-weight: bold;
             text-decoration: none;
             font-size: 14px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #4CAF50;
             color: white;
             width: 100%;
+        }
+        .btn-primary {
+            background-color: #4CAF50;
+            color: white;
+            width: 100%;
+        }
+        .btn-secondary {
+            background-color: #2196F3;
+            color: white;
+            display: block;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        .btn-neutral {
+            background-color: #888;
+            color: white;
+            display: block;
+            text-align: center;
+            box-sizing: border-box;
         }
         .mensaje-resumen {
             background-color: #f9f9f9;
@@ -89,7 +116,7 @@
         <table align="center" border="0">
             <tr> 
                 <th><img src="${pageContext.request.contextPath}/img/musica.png" width="50" height="50"></th>
-                <th><font face="Times New Roman,Times" size="+3">Música para DAA - Iniciar Sesión</font></th>
+                <th><h1>Música para DAA - Iniciar Sesión</h1></th>
                 <th><img src="${pageContext.request.contextPath}/img/musica.png" width="50" height="50"></th>
             </tr>  
         </table>
@@ -112,19 +139,19 @@
                 <label for="password" class="required">Contraseña</label>
                 <input type="password" id="password" name="password" placeholder="Ingrese su contraseña">
             </div>
-            <button type="submit" class="btn">Iniciar Sesión</button>
+            <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
         </form>
 
         <br>
 
         <a href="${pageContext.request.contextPath}/servlet/tienda?accion=irARegistro" 
-           class="btn" style="display:block;text-align:center;background-color:#2196F3;color:white;text-decoration:none;box-sizing:border-box;">
+           class="btn btn-secondary">
            Regístrese aquí
         </a>
 
         <br>
 
-        <a href="${pageContext.request.contextPath}/index.html" class="btn" style="display:block;text-align:center;background-color:#888;color:white;text-decoration:none;box-sizing:border-box;">Volver a la tienda</a>
+        <a href="${pageContext.request.contextPath}/index.html" class="btn btn-neutral">Volver a la tienda</a>
     </div>
 
     <hr>

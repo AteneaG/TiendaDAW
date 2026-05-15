@@ -9,13 +9,20 @@
     <style>
         body {
             background-color: #FDF5E6;
-            font-family: 'Times New Roman', Times, serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
         }
         .header {
             text-align: center;
             margin-bottom: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin: 0;
+            line-height: 50px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 0 10px;
         }
         .formulario-container {
             max-width: 500px;
@@ -38,7 +45,7 @@
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            font-family: 'Times New Roman', Times, serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: 16px;
             box-sizing: border-box;
         }
@@ -51,6 +58,7 @@
             border-bottom: 2px solid #4CAF50;
             padding-bottom: 10px;
             color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .buttons-container {
             margin-top: 20px;
@@ -66,6 +74,7 @@
             font-weight: bold;
             text-decoration: none;
             font-size: 14px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: inline-block;
         }
         .btn-primary {
@@ -156,7 +165,7 @@
         <table align="center" border="0">
             <tr>
                 <th><img src="${pageContext.request.contextPath}/img/musica.png" width="50" height="50"></th>
-                <th><font face="Times New Roman,Times" size="+3">Música para DAA - Registro</font></th>
+                <th><h1>Música para DAA - Registro</h1></th>
                 <th><img src="${pageContext.request.contextPath}/img/musica.png" width="50" height="50"></th>
             </tr>
         </table>
